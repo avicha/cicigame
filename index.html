@@ -1,21 +1,23 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <title>狗狗爱吃胡萝卜</title>
-    <meta name="description" content="狗狗爱吃胡萝卜"/>
-    <meta name="author" content="卢炳成"/>
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <script src="./lib/engine/underscore.min.js"></script>
-    <script src="./configs.js"></script>
-    <script src="./lib/engine/yi.js"></script>
-    <link rel="stylesheet" type="text/css" href="./main.css">
-</head>
+    <meta name="keywords" content="狗狗爱吃胡萝卜" />
+    <meta name="description" content="狗狗爱吃胡萝卜" />
+    <meta name="author" content="卢炳成" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
+    <link rel="stylesheet" type="text/css" href="assets/css/main.css"></head>
 <body>
-<div>
     <canvas id="canvas"></canvas>
     <div id='msg'></div>
-</div>
+    <script type="text/javascript" src="assets/js/lib/sea.js"></script>
+    <script type="text/javascript">
+        seajs.config({
+            base: "./assets/js"
+        });
+        seajs.use("app/init");
+    </script>
 </body>
 </html>
