@@ -17,7 +17,8 @@ define(function(require, exports, module) {
         clearColor: '#ffffff',
         //帧率
         fps: 60,
-        autoRun: true
+        autoRun: true,
+        stageScaleMode: 'contain'
     };
     var CiciGame = Class.extend({
         _running: false,
@@ -54,8 +55,35 @@ define(function(require, exports, module) {
             }
             return this;
         },
+        getWindowSize: function() {
+            return {
+                width: window.innerWidth,
+                height: window.innerHeight
+            };
+        },
         _setCanvasSize: function() {
-            
+            var canvas = this.getCanvas();
+            var windowSize = this.getWindowSize();
+            var windowSizeRate = windowSize.width / windowSize.height;
+            var stageSizeRate = this._stageWidth / this._stageHeight;
+            switch (this._opts.stageScaleMode) {
+                case 'contain':
+                    if (windowSizeRate > stageSizeRate) {
+                        canvas.style.height = windowSize.height;
+                        canvas.style.width = windowSize.height * stageSizeRate;
+                    }
+                    break;
+                case 'cover':
+                    break;
+                case 'fill':
+                    canvas.style.width = windowSize.width;
+                    canvas.style.height = windowSize.height;
+                    break;
+                case 'noscale':
+                    break;
+                default:
+                    break;
+            }
         },
         _setCanvasPosition: function() {
 
