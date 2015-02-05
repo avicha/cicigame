@@ -69,24 +69,44 @@ define(function(require, exports, module) {
             switch (this._opts.stageScaleMode) {
                 case 'contain':
                     if (windowSizeRate > stageSizeRate) {
-                        canvas.style.height = windowSize.height;
-                        canvas.style.width = windowSize.height * stageSizeRate;
+                        canvas.style.height = windowSize.height + 'px';
+                        canvas.style.width = windowSize.height * stageSizeRate + 'px';
+                    } else {
+                        canvas.style.width = windowSize.width + 'px';
+                        canvas.style.height = windowSize.width / stageSizeRate + 'px';
                     }
+
                     break;
                 case 'cover':
+                    if (windowSizeRate > stageSizeRate) {
+                        canvas.style.width = windowSize.width + 'px';
+                        canvas.style.height = windowSize.width / stageSizeRate + 'px';
+
+                    } else {
+                        canvas.style.height = windowSize.height + 'px';
+                        canvas.style.width = windowSize.height * stageSizeRate + 'px';
+                    }
                     break;
                 case 'fill':
-                    canvas.style.width = windowSize.width;
-                    canvas.style.height = windowSize.height;
+                    canvas.style.width = windowSize.width + 'px';
+                    canvas.style.height = windowSize.height + 'px';
                     break;
                 case 'noscale':
                     break;
                 default:
                     break;
             }
+
         },
         _setCanvasPosition: function() {
-
+            var canvas = this.getCanvas();
+            utils.$('body')[0].style.margin = 0;
+            canvas.style.position = 'absolute';
+            canvas.style.left = '50%';
+            canvas.style.top = '50%';
+            console.log(canvas.style.width);
+            canvas.style.marginTop = -window.parseInt(canvas.style.height) / 2 + 'px';
+            canvas.style.marginLeft = -window.parseInt(canvas.style.width) / 2 + 'px';
         },
         launch: function(scene) {
             var game = this;

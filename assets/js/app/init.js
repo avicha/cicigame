@@ -5,10 +5,10 @@ define(function(require, exports, module) {
     var game = new CiciGame();
     game.setCanvas(utils.$('#canvas'));
     game.setStageSize(1280, 720);
-    var menuScene = new MenuScene();
-    menuScene.on('progressUpdate', function(progress) {
-        console.log(progress);
-    });
+    // var menuScene = new MenuScene();
+    // menuScene.on('progressUpdate', function(progress) {
+    //     console.log(progress);
+    // });
     game.launch();
     module.exports = game;
 });
