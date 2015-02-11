@@ -23,7 +23,7 @@ define(function(require, exports, module) {
     var CiciGame = Class.extend({
         _running: false,
         init: function(opts) {
-            this._opts = defaultOpts.clone();
+            this._opts = utils.clone(defaultOpts);
             if (utils.isObject(opts)) {
                 for (var key in opts) {
                     this._opts[key] = opts[key];

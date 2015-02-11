@@ -15,27 +15,26 @@ define(function(require, exports, module) {
             return toString.call(obj) == '[object ' + name + ']';
         };
     });
-    Object.prototype.clone = function() {
-        if (!this || this instanceof HTMLElement || this instanceof Function) {
-            return this;
+    utils.clone = function(obj) {
+        if (!obj || obj instanceof HTMLElement || obj instanceof Function) {
+            return obj;
         }
         var objClone;
-        if (this.constructor == Object) {
+        if (obj.constructor == Object) {
             objClone = {};
         } else {
-            if (this instanceof Array) {
+            if (obj instanceof Array) {
                 objClone = [];
             } else {
-                console.log(this.constructor, this.valueOf());
-                objClone = new this.constructor(this.valueOf());
+                objClone = new obj.constructor(obj.valueOf());
             }
         }
-        for (var key in this) {
-            if (objClone[key] != this[key]) {
-                if (this[key] && typeof(this[key]) === 'object') {
-                    objClone[key] = this[key].clone();
+        for (var key in obj) {
+            if (objClone[key] != obj[key]) {
+                if (obj[key] && typeof(obj[key]) === 'object') {
+                    objClone[key] = utils.clone(obj[key]);
                 } else {
-                    objClone[key] = this[key];
+                    objClone[key] = obj[key];
                 }
             }
         }

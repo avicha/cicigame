@@ -29,9 +29,12 @@ define(function(require, exports, module) {
         },
         //加载图片
         load: function(callback) {
+            var self = this;
             if (!this.loaded) {
                 this.image = new Image();
-                this.image.onload = this.onload.bind(this, callback);
+                this.image.onload = function() {
+                    self.onload.call(self, callback);
+                };
                 this.image.src = this.path + '?' + Date.now();
             }
             return this;
@@ -72,6 +75,7 @@ define(function(require, exports, module) {
             }
         }
     });
+    Texture.IMGPATH = './assets/img/';
     module.exports = Texture;
 });
 // YI.package('engine').module('texture').define(function() {

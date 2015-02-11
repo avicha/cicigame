@@ -26,6 +26,7 @@ define(function(require, exports, module) {
             return this;
         },
         load: function(callback) {
+            var self = this;
             if (!this.loaded) {
                 this.music = new Audio();
                 //判断音频的类型
@@ -42,7 +43,9 @@ define(function(require, exports, module) {
                     throw '浏览器不支持这种音频格式！';
                 }
                 //绑定加载完成事件
-                this.music.addEventListener('canplaythrough', this.onload.bind(this, callback), false);
+                this.music.addEventListener('canplaythrough', function() {
+                    self.onload.call(self, callback);
+                }, false);
                 this.music.src = this.path + "?" + Date.now();
             }
             return this;

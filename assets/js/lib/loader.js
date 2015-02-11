@@ -12,8 +12,9 @@ define(function(require, exports, module) {
         },
         load: function() {
             var self = this;
-            sum = this._resources.length;
-            this._resources.forEach(function(resource) {
+            for (var key in this._resources) {
+                self.sum++;
+                resource = self._resources[key];
                 resource.load(function(err) {
                     if (!err) {
                         self.loaded++;
@@ -25,7 +26,7 @@ define(function(require, exports, module) {
                         self.trigger('progressError', resource, err);
                     }
                 });
-            });
+            }
         }
     });
     module.exports = Loader;

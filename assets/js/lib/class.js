@@ -28,7 +28,7 @@ define(function(require, exports, module) {
             if (!initializing) {
                 for (var p in this) {
                     if (this[p] && utils.isObject(this[p])) {
-                        this[p] = this[p].clone();
+                        this[p] = utils.clone(this[p]);
                     }
                 }
                 if (this.init) {

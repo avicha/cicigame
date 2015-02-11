@@ -74,10 +74,10 @@ define(function(require, exports, module) {
                 }
             }
         },
-        draw: function() {
-            this.texture.drawTile(this.position.x, this.position.y);
+        draw: function(context) {
+            this.texture.drawTile(context, this.position.x, this.position.y);
             if (this.repeat) {
-                this.temp.draw();
+                this.temp.draw(context);
             }
         }
     });

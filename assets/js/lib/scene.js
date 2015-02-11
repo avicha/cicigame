@@ -46,7 +46,7 @@ define(function(require, exports, module) {
                     if (e.scale.x != 1 || e.scale.y != 1) {
                         context.scale(e.scale.x, e.scale.y);
                     }
-                    e.draw();
+                    e.draw(context);
                     //描绘之后恢复画布
                     context.restore();
                     if (e.alpha != 1) {
