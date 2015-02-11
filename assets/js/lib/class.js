@@ -38,6 +38,7 @@ define(function(require, exports, module) {
             return this;
         }
         c.prototype = prototype;
+        c.prototype._events = {};
         c.prototype.on = function(evt, fn) {
             if (this._events[evt]) {
                 this._events[evt].push(fn);

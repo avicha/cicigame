@@ -104,7 +104,6 @@ define(function(require, exports, module) {
             canvas.style.position = 'absolute';
             canvas.style.left = '50%';
             canvas.style.top = '50%';
-            console.log(canvas.style.width);
             canvas.style.marginTop = -window.parseInt(canvas.style.height) / 2 + 'px';
             canvas.style.marginLeft = -window.parseInt(canvas.style.width) / 2 + 'px';
         },
@@ -125,7 +124,7 @@ define(function(require, exports, module) {
             if (scene) {
                 game.load(scene);
                 if (scene.resources) {
-                    var loader = new require('lib/loader')();
+                    var loader = new (require('lib/loader'))();
                     loader.addResources(scene.resources);
                     loader.load();
                     scene.listenTo(loader, 'progressUpdate', function(progress) {
@@ -158,9 +157,10 @@ define(function(require, exports, module) {
         run: function() {
             if (this._running && this._currentScene) {
                 var t1 = Date.now();
-                this._currentScene.update();
-                this._currentScene.clear();
-                this._currentScene.draw();
+                this._currentScene.update(this._opts.fps);
+                this._context.fillStyle = this.clearColor;
+                this._context.clearRect(0, 0, this._stageWidth, this._stageHeight);
+                this._currentScene.draw(this._context);
                 var t2 = Date.now();
                 var dt = t2 - t1;
                 window.requestAnimationFrame(this.run.bind(this), 1000 / this._opts.fps - dt);

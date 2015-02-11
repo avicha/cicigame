@@ -26,6 +26,7 @@ define(function(require, exports, module) {
             if (this instanceof Array) {
                 objClone = [];
             } else {
+                console.log(this.constructor, this.valueOf());
                 objClone = new this.constructor(this.valueOf());
             }
         }
