@@ -15,6 +15,17 @@ define(function(require, exports, module) {
         _entities: [],
         //场景命名实体
         _namedEntities: {},
+        setStageSize: function(w, h) {
+            this._stageWidth = w;
+            this._stageHeight = h;
+            return this;
+        },
+        getStageSize: function() {
+            return {
+                width: this._stageWidth,
+                height: this._stageHeight
+            };
+        },
         //更新场景
         update: function(fps) {
             var self = this;

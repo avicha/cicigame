@@ -7,28 +7,28 @@ define(function(require, exports, module) {
     var Background = require('lib/ui/background');
     var Button = require('lib/ui/button');
     var MenuScene = Scene.extend({
-        resources: {
-            menuBg: new Texture('menuBg.png'),
-            enterButton: new Texture('enterButton.png', 1, 2)
-        },
         init: function() {
             var self = this;
-            this.menuBg = this.addGameObject(new Background(0, 0, 0, this.resources.menuBg));
-            this.enterButton = this.addGameObject(new Button(252, 153, 1, this.resources.enterButton));
-            this.on('touchMove', function(target) {
-                if (target === self.enterButton) {
+            this.menuBg = this.addGameObject(new Background(0, 0, 0, MenuScene.resources.menuBg));
+            this.enterButton = this.addGameObject(new Button(252, 153, 1, MenuScene.resources.enterButton));
+            this.on('touchMove', function(e) {
+                if (e.target === self.enterButton) {
                     self.enterButton.setCurrentAnim('mousein');
                 } else {
                     self.enterButton.setCurrentAnim('mouseout');
                 }
             });
-            this.on('tap', function(target) {
-                if (target === this.enterButton) {
-
+            this.on('tap', function(e) {
+                if (e.target === this.enterButton) {
+                    self.trigger('switchScene', 'Scene_1');
                 }
             });
         }
     });
+    MenuScene.resources = {
+        menuBg: new Texture('menuBg.png'),
+        enterButton: new Texture('enterButton.png', 1, 2)
+    };
     module.exports = MenuScene;
 });
 // YI.package('game.scene').module('menu').import('engine.scene').define(function() {

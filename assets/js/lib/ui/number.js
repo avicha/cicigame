@@ -1,8 +1,10 @@
 /**
  * @author lbc
  */
-YI.package('engine.ui').module('number').import('engine.drawableobject', 'engine.texture').define(function() {
-    Num = YI.Num = YI.DrawableObject.extend({
+define(function(require, exports, module) {
+    var utils = require('lib/utils');
+    var DrawableObject = require('lib/drawableobject');
+    var Num = DrawableObject.extend({
         //数字值
         value: '',
         //数字显示的缓存
@@ -14,10 +16,9 @@ YI.package('engine.ui').module('number').import('engine.drawableobject', 'engine
         //相比位置的偏移位置
         offsetX: 0,
         offsetY: 0,
-        init: function(x, y, z, value, texture, configs) {
-            this.super(x, y, z, configs);
-            this.setTexture(texture);
-            this.value = value;
+        init: function(x, y, z, opts) {
+            this._opts = opts;
+            this.super(x, y, z, opts);
             var str = this.value;
             var arr = [];
             //计算出帧序列
@@ -29,12 +30,12 @@ YI.package('engine.ui').module('number').import('engine.drawableobject', 'engine
                 }
             }
             //填充到缓冲区画板
-            this.content = $new('canvas');
+            this.content = utils.$new('canvas');
             this.content.width = str.length * this.texture.tileWidth;
             this.content.height = this.texture.tileHeight;
             var ctx = this.content.getContext('2d');
             for (i = 0, l = str.length; i < l; i++) {
-                this.texture.drawTile(i * this.texture.tileWidth, 0, arr[i], ctx);
+                this.texture.drawTile(ctx, i * this.texture.tileWidth, 0, arr[i]);
             }
             //根据对齐方式设置偏移
             if (this.align == Num.ALIGN.CENTER) {
@@ -52,12 +53,13 @@ YI.package('engine.ui').module('number').import('engine.drawableobject', 'engine
         },
         //设置数字
         setNum: function(num) {
-            this.init(this.position.x, this.position.y, this.z, num, this.texture);
+            this._opts.value = num;
+            this.init(this.position.x, this.position.y, this.z, this._opts);
         },
         //描绘
-        draw: function() {
+        draw: function(context) {
             if (this.visiable) {
-                YI.context.drawImage(this.content, this.position.x - this.offsetX, this.position.y - this.offsetY);
+                context.drawImage(this.content, this.position.x - this.offsetX, this.position.y - this.offsetY);
             }
         }
     });
@@ -71,10 +73,5 @@ YI.package('engine.ui').module('number').import('engine.drawableobject', 'engine
         MIDDLE: 1,
         BOTTOM: 2
     };
-    //用到的图片
-    Num.Textures = {
-        small: new Texture('numberSmall.png', 1, 11),
-        normal: new Texture('numberNormal.png', 1, 11),
-        big: new Texture('numberBig.png', 1, 11)
-    };
+    module.exports = Num;
 });

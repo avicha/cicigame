@@ -6,6 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 define(function(require, exports, module) {
+    var utils = require('lib/utils');
     var Class = require('lib/class');
     var Vector2 = require('lib/shape/vector2');
     var Rect = require('lib/shape/rectangle');
@@ -29,9 +30,14 @@ define(function(require, exports, module) {
         //使用图片
         texture: null,
         //初始化位置
-        init: function(x, y, z) {
+        init: function(x, y, z, opts) {
             this.position.set(x, y);
             this.z = z;
+            if (opts && utils.isObject(opts)) {
+                for (var key in opts) {
+                    this[key] = opts[key];
+                }
+            }
             if (!this.shape && this.texture) {
                 this.setShape(new Rect(0, 0, this.texture.tileWidth, this.texture.tileHeight));
             }
@@ -42,14 +48,17 @@ define(function(require, exports, module) {
             if (!this.shape && this.texture) {
                 this.setShape(new Rect(0, 0, this.texture.tileWidth, this.texture.tileHeight));
             }
+            return this;
         },
         //设置碰撞形状
         setShape: function(shape) {
             this.shape = shape;
+            return this;
         },
         //结束精灵生命周期
         kill: function() {
             this.killed = true;
+            return this;
         }
     });
     module.exports = DrawableObject;

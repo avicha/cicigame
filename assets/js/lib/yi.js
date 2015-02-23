@@ -48,12 +48,21 @@ define(function(require, exports, module) {
         getCanvas: function() {
             return this._canvas;
         },
+        getContext: function() {
+            return this._context;
+        },
         setStageSize: function(w, h) {
             if (w && h) {
                 this._stageWidth = w;
                 this._stageHeight = h;
             }
             return this;
+        },
+        getStageSize: function() {
+            return {
+                width: this._stageWidth,
+                height: this._stageHeight
+            };
         },
         getWindowSize: function() {
             return {
@@ -71,9 +80,17 @@ define(function(require, exports, module) {
                     if (windowSizeRate > stageSizeRate) {
                         canvas.style.height = windowSize.height + 'px';
                         canvas.style.width = windowSize.height * stageSizeRate + 'px';
+                        this.canvasScale = {
+                            w: canvas.height / windowSize.height,
+                            h: canvas.height / windowSize.height
+                        };
                     } else {
                         canvas.style.width = windowSize.width + 'px';
                         canvas.style.height = windowSize.width / stageSizeRate + 'px';
+                        this.canvasScale = {
+                            w: canvas.width / windowSize.width,
+                            h: canvas.width / windowSize.width
+                        };
                     }
 
                     break;
@@ -81,17 +98,32 @@ define(function(require, exports, module) {
                     if (windowSizeRate > stageSizeRate) {
                         canvas.style.width = windowSize.width + 'px';
                         canvas.style.height = windowSize.width / stageSizeRate + 'px';
-
+                        this.canvasScale = {
+                            w: canvas.width / windowSize.width,
+                            h: canvas.width / windowSize.width
+                        };
                     } else {
                         canvas.style.height = windowSize.height + 'px';
                         canvas.style.width = windowSize.height * stageSizeRate + 'px';
+                        this.canvasScale = {
+                            w: canvas.height / windowSize.height,
+                            h: canvas.height / windowSize.height
+                        };
                     }
                     break;
                 case 'fill':
                     canvas.style.width = windowSize.width + 'px';
                     canvas.style.height = windowSize.height + 'px';
+                    this.canvasScale = {
+                        w: canvas.width / windowSize.width,
+                        h: canvas.height / windowSize.height
+                    };
                     break;
                 case 'noscale':
+                    this.canvasScale = {
+                        w: 1,
+                        h: 1
+                    };
                     break;
                 default:
                     break;
@@ -109,6 +141,7 @@ define(function(require, exports, module) {
         },
         launch: function(scene) {
             var game = this;
+            var Evt = require('lib/event');
             if (!game.getCanvas()) {
                 throw new Error("请设置游戏画板");
             }
@@ -123,35 +156,81 @@ define(function(require, exports, module) {
             game._setCanvasPosition();
             if (scene) {
                 game.load(scene);
-                if (scene.resources) {
-                    var loader = new (require('lib/loader'))();
-                    loader.addResources(scene.resources);
-                    loader.load();
-                    scene.listenTo(loader, 'progressUpdate', function(progress) {
-                        scene.trigger('progressUpdate', progress);
-                    });
-                    scene.listenTo(loader, 'progressComplete', function() {
-                        if (game._opts.autoRun) {
-                            game.start();
-                        }
-                        scene.trigger('progressComplete');
-                    });
-                } else {
-                    if (game._opts.autoRun) {
-                        game.start();
+            }
+            var eventListener = new Evt(game.getCanvas());
+            for (var type in Evt.type) {
+                game.listenTo(eventListener, type, function(e) {
+                    var point = e.mouses[e.mouses.length - 1];
+                    point.set(point.x * game.canvasScale.w, point.y * game.canvasScale.h);
+                    if (game._currentScene) {
+                        var r = [];
+                        game._currentScene.getEntities().forEach(function(entity) {
+                            if (entity.visiable && entity.shape && entity.shape.relativeTo(entity.position).contains(point)) {
+                                r.push(entity);
+                            }
+                        });
+                        r.sort(function(a, b) {
+                            return b.z - a.z;
+                        });
+                        e.target = r[0];
+                        game._currentScene.trigger(e.currentEvent, e);
                     }
-                    scene.trigger('progressComplete');
-                }
+                });
             }
             return game;
         },
-        //场景跳转控制器
-        load: function(scene) {
-            if (this._currentScene) {
-                this._currentScene.release();
-                this._currentScene = null;
+        loadingStep: function(progress) {
+
+        },
+        setLoadingStep: function(fn) {
+            if (utils.isFunction(fn)) {
+                this.loadingStep = fn;
             }
-            this._currentScene = scene;
+        },
+        //场景跳转控制器
+        load: function(Scene) {
+            var game = this;
+            if (game._currentScene) {
+                game._currentScene.release();
+                game._currentScene = null;
+            }
+            this.loadingStep(0);
+            if (Scene.resources) {
+                var loader = new(require('lib/loader'))();
+                loader.addResources(Scene.resources);
+                loader.on('progressUpdate', function(progress) {
+                    game.loadingStep(progress);
+                });
+                loader.on('progressComplete', function() {
+                    game._currentScene = new Scene();
+                    game._currentScene.setStageSize(game.getStageSize().width, game.getStageSize().height);
+                    game._currentScene.on('switchScene', function(scene) {
+                        var newScene = require('app/scene/index')[scene];
+                        if (newScene) {
+                            game.load(newScene);
+                        }
+                    });
+                    game._currentScene.on('stopScene', function() {
+                        game.stop();
+                    });
+                    game._currentScene.on('startScene', function() {
+                        game.start();
+                    });
+                    if (game._opts.autoRun) {
+                        game.start();
+                    }
+                });
+                loader.load();
+            } else {
+                game._currentScene = new Scene();
+                game._currentScene.setStageSize(game.getStageSize().width, game.getStageSize().height);
+                game._currentScene.on('switchScene', function(scene) {
+                    game.load(scene);
+                });
+                if (game._opts.autoRun) {
+                    game.start();
+                }
+            }
         },
         //运行游戏循环
         run: function() {
@@ -165,22 +244,26 @@ define(function(require, exports, module) {
                 var dt = t2 - t1;
                 window.requestAnimationFrame(this.run.bind(this), 1000 / this._opts.fps - dt);
                 this.frameCount++;
+            } else {
+                this._running = false;
             }
         },
         //游戏开始
         start: function() {
-            this._running = true;
-            this._currentScene.getEntities().forEach(function(e) {
-                if (e.currentAnimation) {
-                    e.currentAnimation.resume();
-                }
-            });
-            window.requestAnimationFrame(this.run.bind(this), 1000 / this._opts.fps);
+            if (!this._running) {
+                this._running = true;
+                this._currentScene.getEntities().forEach(function(e) {
+                    if (e.currentAnimation) {
+                        e.currentAnimation.resume();
+                    }
+                });
+                window.requestAnimationFrame(this.run.bind(this), 1000 / this._opts.fps);
+            }
         },
         //场景暂停，暂停的同时记得把所有计时器都暂停，否则计时器暂停期间依然在计时。
         stop: function() {
             this._running = false;
-            this.curScene.getEntities.forEach(function(e) {
+            this._currentScene.getEntities().forEach(function(e) {
                 if (e.currentAnimation) {
                     e.currentAnimation.stop();
                 }

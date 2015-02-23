@@ -36,6 +36,10 @@ define(function(require, exports, module) {
                     self.onload.call(self, callback);
                 };
                 this.image.src = this.path + '?' + Date.now();
+            } else {
+                window.setTimeout(function() {
+                    self.onload.call(self, callback);
+                }, 0);
             }
             return this;
         },

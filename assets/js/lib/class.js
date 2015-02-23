@@ -8,6 +8,7 @@ define(function(require, exports, module) {
         initializing = false;
         for (var name in prop) {
             if (utils.isFunction(prop[name]) && utils.isFunction(parent[name])) {
+
                 prototype[name] = (function(name, fn) {
                     return function() {
                         var temp = this.super || null;
@@ -48,7 +49,7 @@ define(function(require, exports, module) {
         };
         c.prototype.trigger = function(evt) {
             var self = this;
-            var args = Array.prototype.slice.call(arguments);
+            var args = Array.prototype.slice.call(arguments, 1);
             if (self._events[evt]) {
                 self._events[evt].forEach(function(fn) {
                     fn.apply(self, args);

@@ -8,9 +8,12 @@ define(function(require, exports, module) {
         },
         isObject: function(obj) {
             return obj === Object(obj);
+        },
+        isFunction: function(fn) {
+            return 'function' === typeof fn;
         }
     };
-    ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'].forEach(function(name) {
+    ['Arguments', 'String', 'Number', 'Date', 'RegExp'].forEach(function(name) {
         utils['is' + name] = function(obj) {
             return toString.call(obj) == '[object ' + name + ']';
         };

@@ -18,9 +18,9 @@ define(function(require, exports, module) {
                 resource.load(function(err) {
                     if (!err) {
                         self.loaded++;
-                        self.trigger('progressUpdate', self.loaded, self.sum);
+                        self.trigger('progressUpdate', self.loaded / self.sum);
                         if (self.loaded === self.sum) {
-                            self.trigger('progressComplete', self.loaded, self.sum);
+                            self.trigger('progressComplete');
                         }
                     } else {
                         self.trigger('progressError', resource, err);
