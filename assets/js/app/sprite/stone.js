@@ -29,7 +29,28 @@ define(function(require, exports, module) {
             this.acceleration.y = 2 * (this.targetY - startY - this.speed.y * t) / (t * t);
         },
         update: function(fps) {
+            var self = this;
             this.super(fps);
+            this.scene.dogs.forEach(function(dog) {
+                if (self.collideWith(dog) && self.z === dog.z && dog.currentAnimation == dog.animations.run) {
+                    self.kill();
+                    dog.setCurrentAnim('stop', 2, function() {
+                        dog.setCurrentAnim('run');
+                        dog.speed.x = -120;
+                    });
+                    dog.hurt(100 / dog.bear);
+                    if (dog.health <= 0) {
+                        dog.setCurrentAnim('sleep');
+                        self.scene.sumScore += dog.score;
+                        self.scene.score.setNum(self.scene.sumScore.toString());
+                        if (dog.beat) {
+                            clearInterval(dog.beat);
+                            dog.beat = 0;
+                        }
+                    }
+                    dog.speed.set(120, 0);
+                }
+            });
             if (this.position.y > 600) {
                 this.kill();
             }
@@ -37,51 +58,3 @@ define(function(require, exports, module) {
     });
     module.exports = Stone;
 });
-// YI.package('game.sprite').module('stone').import('engine.sprite').define(function() {
-//     Stone = Sprite.extend({
-//         texture: new Texture('stone.png', 1, 4),
-//         targetX: 0,
-//         targetY: 0,
-//         init: function(x, y, z, targetX, targetY) {
-//             this.super(x, y, z);
-
-//             //扔骨头的动画
-//             this.addAnimation('throw', [0, 1, 2, 3], 100);
-//             //扔的时间控制
-//             var t = 1;
-//             //扔的开始位置
-//             var startX = this.position.x + this.shape.pivot.x;
-//             var startY = this.position.y + this.shape.pivot.y;
-//             //扔的速度
-//             this.speed.x = (this.targetX - startX) / t;
-//             this.speed.y = -1.5 * this.speed.x;
-//             //扔的加速度
-//             this.acceleration.y = 2 * (this.targetY - startY - this.speed.y * t) / (t * t);
-//             this.setCurrentAnim('throw');
-//         },
-//         update: function() {
-//             this.super();
-//             _.each(YI.curScene.dogs, function(e) {
-//                 if (this.collideWith(e) && this.z == e.z && e.currentAnimation == e.animations.run) {
-//                     this.kill();
-//                     e.setCurrentAnim('stop', 2, function() {
-//                         e.setCurrentAnim('run');
-//                         e.speed.x = -120;
-//                     });
-//                     e.hurt(100 / e.bear);
-//                     if (e.health <= 0) {
-//                         e.setCurrentAnim('sleep');
-//                         YI.curScene.sumScore += e.score;
-//                         YI.curScene.score.setNum(YI.curScene.sumScore.toString());
-//                         clearInterval(e.beat);
-//                         e.beat = -1;
-//                     }
-//                     e.speed.set(120, 0);
-//                 }
-//             }, this);
-//             if (this.position.y > 600) {
-//                 this.kill();
-//             }
-//         }
-//     });
-// });

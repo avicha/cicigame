@@ -29,17 +29,20 @@ define(function(require, exports, module) {
             this.acceleration.y = 2 * (this.targetY - startY - this.speed.y * t) / (t * t);
         },
         update: function(fps) {
+            var self = this;
             this.super(fps);
             //如果扔中狗狗了，则移除骨头，狗狗掉头走
-            // _.each(YI.curScene.dogs, function(e) {
-            //     if (this.collideWith(e) && this.z == e.z && e.currentAnimation == e.animations.run) {
-            //         this.kill();
-            //         e.setCurrentAnim('back');
-            //         clearInterval(e.beat);
-            //         e.beat = -1;
-            //         e.speed.set(240, 0);
-            //     }
-            // }, this);
+            this.scene.dogs.forEach(function(dog) {
+                if (self.collideWith(dog) && self.z === dog.z && dog.currentAnimation == dog.animations.run) {
+                    self.kill();
+                    dog.setCurrentAnim('back');
+                    if (dog.beat) {
+                        clearInterval(dog.beat);
+                        dog.beat = 0;
+                    }
+                    dog.speed.set(240, 0);
+                }
+            });
             //扔不中则移除骨头
             if (this.position.y > 600) {
                 this.kill();
