@@ -139,6 +139,11 @@ define(function(require, exports, module) {
             canvas.style.marginTop = -window.parseInt(canvas.style.height) / 2 + 'px';
             canvas.style.marginLeft = -window.parseInt(canvas.style.width) / 2 + 'px';
         },
+        setTexturePath: function(path) {
+            var Texture = require('lib/texture');
+            Texture.IMGPATH = path;
+            return this;
+        },
         launch: function(scene) {
             var game = this;
             var Evt = require('lib/event');
@@ -186,6 +191,7 @@ define(function(require, exports, module) {
             if (utils.isFunction(fn)) {
                 this.loadingStep = fn;
             }
+            return this;
         },
         //场景跳转控制器
         load: function(Scene) {
@@ -231,6 +237,7 @@ define(function(require, exports, module) {
                     game.start();
                 }
             }
+            return this;
         },
         //运行游戏循环
         run: function() {
@@ -247,6 +254,7 @@ define(function(require, exports, module) {
             } else {
                 this._running = false;
             }
+            return this;
         },
         //游戏开始
         start: function() {
@@ -259,6 +267,7 @@ define(function(require, exports, module) {
                 });
                 window.requestAnimationFrame(this.run.bind(this), 1000 / this._opts.fps);
             }
+            return this;
         },
         //场景暂停，暂停的同时记得把所有计时器都暂停，否则计时器暂停期间依然在计时。
         stop: function() {
@@ -268,6 +277,7 @@ define(function(require, exports, module) {
                     e.currentAnimation.stop();
                 }
             });
+            return this;
         }
     });
     module.exports = CiciGame;

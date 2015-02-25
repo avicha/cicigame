@@ -8,7 +8,6 @@ define(function(require, exports, module) {
         initializing = false;
         for (var name in prop) {
             if (utils.isFunction(prop[name]) && utils.isFunction(parent[name])) {
-
                 prototype[name] = (function(name, fn) {
                     return function() {
                         var temp = this.super || null;

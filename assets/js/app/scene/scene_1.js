@@ -152,49 +152,13 @@ define(function(require, exports, module) {
                         if (o instanceof Dog && o.currentAnimation == o.animations.run) {
                             switch (this.currentTool) {
                                 case Tools.TYPE.Stone:
-                                    if (this.stoneTool.count) {
-                                        var stone = new Stone(this.carrot.position.x + this.carrot.texture.tileWidth, this.carrot.position.y, o.z, Scene_1.resources.stoneSprite);
-                                        var point = e.mouses[e.mouses.length - 1];
-                                        stone.setTarget(point.x, point.y);
-                                        this.addGameObject(stone);
-                                        this.stoneTool.count--;
-                                        this.stoneNum.setNum('*' + this.stoneTool.count.toString());
-                                    }
+                                    this.throwStone(e.x, e.y, o.z);
                                     break;
                                 case Tools.TYPE.Stick:
-                                    if (this.stickTool.count) {
-                                        var stick = new Stick(this.carrot.position.x + this.carrot.texture.tileWidth, this.carrot.position.y, o.z, Scene_1.resources.stickSprite, o);
-                                        o.setCurrentAnim('stop', 2, function() {
-                                            o.setCurrentAnim('run');
-                                            o.speed.x = -120;
-                                        });
-                                        o.hurt(100 / o.bear);
-                                        if (o.health <= 0) {
-                                            o.setCurrentAnim('sleep');
-                                            this.sumScore += o.score;
-                                            this.score.setNum(this.sumScore.toString());
-                                            o.speed.x = 120;
-                                        } else {
-                                            o.position.x += 150;
-                                        }
-                                        if (o.beat) {
-                                            clearInterval(o.beat);
-                                            o.beat = 0;
-                                        }
-                                        this.addGameObject(stick);
-                                        this.stickTool.count--;
-                                        this.stickNum.setNum('*' + this.stickTool.count.toString());
-                                    }
+                                    this.throwStick(o);
                                     break;
                                 case Tools.TYPE.Bone:
-                                    if (this.boneTool.count) {
-                                        var bone = new Bone(this.carrot.position.x + this.carrot.texture.tileWidth, this.carrot.position.y, o.z, Scene_1.resources.boneSprite);
-                                        var point = e.mouses[e.mouses.length - 1];
-                                        bone.setTarget(point.x, point.y);
-                                        this.addGameObject(bone);
-                                        this.boneTool.count--;
-                                        this.boneNum.setNum('*' + this.boneTool.count.toString());
-                                    }
+                                    this.throwBone(e.x, e.y, o.z);
                                     break;
                                 default:
                                     break;
@@ -208,11 +172,22 @@ define(function(require, exports, module) {
             });
         },
         update: function(fps) {
+            var self = this;
             if (this.success || this.fail) {
                 this.trigger('stopScene');
                 return;
             }
-            this.super(fps);
+            this.carrot.isBeated = false;
+            //改变血条的宽度
+            this.blood.icon.tileWidth = 240 * this.carrot.health / 100;
+            if (this.carrot.health <= 0) {
+                this.trigger('fail');
+            }
+            this.dogs.forEach(function(dog) {
+                if (dog.beat) {
+                    self.carrot.isBeated = true;
+                }
+            });
             this.currentLength += this.bg2.speed.x / fps;
             if (this.currentLength >= this.targetLength) {
                 this.success = this.addGameObject(new Background(128, 0, 6, Scene_1.resources.success));
@@ -226,20 +201,62 @@ define(function(require, exports, module) {
                     dog = this.addGameObject(new Dog1(this.getStageSize().width, 500, this.dogs.length + 5, {
                         texture: Scene_1.resources.dog1
                     }));
-                    this.dogs.push(dog);
                 } else {
                     if (r < 0.2 / fps) {
                         dog = this.addGameObject(new Dog2(this.getStageSize().width, 500, this.dogs.length + 5, {
                             texture: Scene_1.resources.dog2
                         }));
-                        this.dogs.push(dog);
                     } else {
                         dog = this.addGameObject(new Dog3(this.getStageSize().width, 450, this.dogs.length + 5, {
                             texture: Scene_1.resources.dog3
                         }));
-                        this.dogs.push(dog);
                     }
                 }
+                this.dogs.push(dog);
+            }
+            this.super(fps);
+        },
+        throwStone: function(x, y, z) {
+            if (this.stoneTool.count) {
+                var stone = new Stone(this.carrot.position.x + this.carrot.texture.tileWidth, this.carrot.position.y, z, Scene_1.resources.stoneSprite);
+                stone.setTarget(x, y);
+                this.addGameObject(stone);
+                this.stoneTool.count--;
+                this.stoneNum.setNum('*' + this.stoneTool.count.toString());
+            }
+        },
+        throwStick: function(dog) {
+            if (this.stickTool.count) {
+                var stick = new Stick(this.carrot.position.x + this.carrot.texture.tileWidth, this.carrot.position.y, dog.z, Scene_1.resources.stickSprite, dog);
+                dog.setCurrentAnim('stop', 2, function() {
+                    dog.setCurrentAnim('run');
+                    dog.speed.x = -120;
+                });
+                dog.hurt(100 / dog.bear);
+                if (dog.health <= 0) {
+                    dog.setCurrentAnim('sleep');
+                    this.sumScore += dog.score;
+                    this.score.setNum(this.sumScore.toString());
+                    dog.speed.x = 120;
+                } else {
+                    dog.position.x += 150;
+                }
+                if (dog.beat) {
+                    clearInterval(dog.beat);
+                    dog.beat = 0;
+                }
+                this.addGameObject(stick);
+                this.stickTool.count--;
+                this.stickNum.setNum('*' + this.stickTool.count.toString());
+            }
+        },
+        throwBone: function(x, y, z) {
+            if (this.boneTool.count) {
+                var bone = new Bone(this.carrot.position.x + this.carrot.texture.tileWidth, this.carrot.position.y, z, Scene_1.resources.boneSprite);
+                bone.setTarget(x, y);
+                this.addGameObject(bone);
+                this.boneTool.count--;
+                this.boneNum.setNum('*' + this.boneTool.count.toString());
             }
         }
     });

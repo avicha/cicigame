@@ -79,6 +79,6 @@ define(function(require, exports, module) {
             }
         }
     });
-    Texture.IMGPATH = './assets/img/';
+    Texture.IMGPATH = '';
     module.exports = Texture;
 });

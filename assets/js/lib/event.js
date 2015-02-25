@@ -8,11 +8,9 @@ define(function(require, exports, module) {
         init: function(dom) {
             var self = this;
             this.startMouse = this.endMouse = null;
-            this.lastTouchStart = this.lastTouchEnd = 0;
-            this.mouseNum = 0;
+            this.lastTouchStart = 0;
             this.currentEvent = Evt.type.none;
             this.mouses = [];
-            this.isMouseDown = false;
             this.Key = 0;
             if (/mobile/i.test(window.navigator.userAgent)) {
                 dom.addEventListener('touchstart', onTouchStart, false);
@@ -50,14 +48,14 @@ define(function(require, exports, module) {
         },
         onMouseDown: function(e) {
             var self = this;
-            this.isMouseDown = true;
             this.currentEvent = Evt.type.touchStart;
             this.mouses.push(new Vector2(e.offsetX, e.offsetY));
-            this.mouseNum++;
             this.startMouse = {
                 x: e.offsetX,
                 y: e.offsetY
             };
+            this.x = e.offsetX;
+            this.y = e.offsetY;
             setTimeout(function() {
                 if (self.currentEvent == Evt.type.touchStart && Date.now() - self.lastTouchStart > 900) {
                     self.currentEvent = Evt.type.longPress;
@@ -70,18 +68,19 @@ define(function(require, exports, module) {
         onMouseMove: function(e) {
             this.currentEvent = Evt.type.touchMove;
             this.mouses.push(new Vector2(e.offsetX, e.offsetY));
-            this.mouseNum++;
+            this.x = e.offsetX;
+            this.y = e.offsetY;
             this.trigger(this.currentEvent, this);
         },
         onMouseUp: function(e) {
-            this.isMouseDown = false;
             this.currentEvent = Evt.type.touchEnd;
             this.mouses.push(new Vector2(e.offsetX, e.offsetY));
-            this.mouseNum++;
             this.endMouse = {
                 x: e.offsetX,
                 y: e.offsetY
             };
+            this.x = e.offsetX;
+            this.y = e.offsetY;
             if (this.endMouse.x - this.startMouse.x >= 70 && Math.abs(this.endMouse.y - this.startMouse.y) <= 30) {
                 this.currentEvent = Evt.type.rightSwipe;
             }
@@ -96,23 +95,22 @@ define(function(require, exports, module) {
             }
             this.trigger(this.currentEvent, this);
             this.mouses = [];
-            this.mouseNum = 0;
         },
         onClick: function(e) {
             this.currentEvent = Evt.type.tap;
             this.mouses.push(new Vector2(e.offsetX, e.offsetY));
-            this.mouseNum++;
+            this.x = e.offsetX;
+            this.y = e.offsetY;
             this.trigger(this.currentEvent, this);
             this.mouses = [];
-            this.mouseNum = 0;
         },
         onDoubleClick: function(e) {
             this.currentEvent = Evt.type.doubleTap;
             this.mouses.push(new Vector2(e.offsetX, e.offsetY));
-            this.mouseNum++;
+            this.x = e.offsetX;
+            this.y = e.offsetY;
             this.trigger(this.currentEvent, this);
             this.mouses = [];
-            this.mouseNum = 0;
         }
     });
     Evt.type = {

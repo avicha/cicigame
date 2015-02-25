@@ -18,17 +18,6 @@ define(function(require, exports, module) {
         },
         update: function(fps) {
             this.super(fps);
-            this.isBeated = false;
-            //改变血条的宽度
-            this.scene.blood.icon.tileWidth = 240 * this.health / 100;
-            if (this.health <= 0) {
-                this.scene.trigger('fail');
-            }
-            this.scene.dogs.forEach(function(dog) {
-                if (dog.beat) {
-                    this.isBeated = true;
-                }
-            });
             //如果被咬着但当前动画不是警告则设置为警告
             if (this.isBeated && this.currentAnimation != this.animations.warm) {
                 this.setCurrentAnim('warm');
