@@ -166,7 +166,9 @@ define(function(require, exports, module) {
             for (var type in Evt.type) {
                 game.listenTo(eventListener, type, function(e) {
                     var point = e.mouses[e.mouses.length - 1];
-                    point.set(point.x * game.canvasScale.w, point.y * game.canvasScale.h);
+                    e.x *= game.canvasScale.w;
+                    e.y *= game.canvasScale.h;
+                    point.set(e.x, e.y);
                     if (game._currentScene) {
                         var r = [];
                         game._currentScene.getEntities().forEach(function(entity) {
