@@ -1,8 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Class = require('lib/class');
+define(['lib/class'], function(Class) {
     var Clock = Class.extend({
         //开始时间
         _startTime: 0,
@@ -48,5 +47,5 @@ define(function(require, exports, module) {
             return this._elapsedTime;
         }
     });
-    module.exports = Clock;
+    return Clock;
 });

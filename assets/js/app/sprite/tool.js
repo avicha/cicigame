@@ -1,8 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Sprite = require('lib/sprite');
+define(['lib/sprite'], function(Sprite) {
     var Tools = Sprite.extend({
         //道具数量，-1表示无限
         count: 0,
@@ -15,5 +14,5 @@ define(function(require, exports, module) {
         Bone: 2,
         Stick: 3
     };
-    module.exports = Tools;
+    return Tools;
 });

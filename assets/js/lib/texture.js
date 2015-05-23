@@ -1,6 +1,5 @@
 //纹理类
-define(function(require, exports, module) {
-    var Class = require('lib/class');
+define(['lib/class'], function(Class) {
     var Texture = Class.extend({
         //图片路径
         path: '',
@@ -80,5 +79,5 @@ define(function(require, exports, module) {
         }
     });
     Texture.IMGPATH = '';
-    module.exports = Texture;
+    return Texture;
 });

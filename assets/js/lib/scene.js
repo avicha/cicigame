@@ -2,8 +2,7 @@
  * @author lbc
  */
 //场景类
-define(function(require, exports, module) {
-    var Class = require('lib/class');
+define(['lib/class'], function(Class) {
     var Scene = Class.extend({
         //背景音乐
         bgSound: null,
@@ -25,6 +24,9 @@ define(function(require, exports, module) {
                 width: this._stageWidth,
                 height: this._stageHeight
             };
+        },
+        getResources: function() {
+            return this.resources;
         },
         //更新场景
         update: function(fps) {
@@ -86,7 +88,7 @@ define(function(require, exports, module) {
         },
         //添加游戏实体
         addGameObject: function(object) {
-            object.scene =  this;
+            object.scene = this;
             this._entities.push(object);
             if (object.name && object.name != 'unknown') {
                 this._namedEntities[object.name] = object;
@@ -106,5 +108,5 @@ define(function(require, exports, module) {
             return this._entities;
         }
     });
-    module.exports = Scene;
+    return Scene;
 });

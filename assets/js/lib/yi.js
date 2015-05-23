@@ -1,7 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
+define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app/scene/index'], function(Class, utils, Texture, Evt, Loader, scenes) {
     //定义动画函数
     if (!window.requestAnimationFrame) {
         window.requestAnimationFrame = (function() {
@@ -10,14 +10,14 @@ define(function(require, exports, module) {
             };
         })();
     }
-    var Class = require('lib/class');
-    var utils = require('lib/utils');
     var defaultOpts = {
         //画布背景
         clearColor: '#ffffff',
         //帧率
         fps: 60,
+        //自动运行游戏
         autoRun: true,
+        //舞台适配策略
         stageScaleMode: 'contain'
     };
     var CiciGame = Class.extend({
@@ -140,13 +140,11 @@ define(function(require, exports, module) {
             canvas.style.marginLeft = -window.parseInt(canvas.style.width) / 2 + 'px';
         },
         setTexturePath: function(path) {
-            var Texture = require('lib/texture');
             Texture.IMGPATH = path;
             return this;
         },
         launch: function(scene) {
             var game = this;
-            var Evt = require('lib/event');
             if (!game.getCanvas()) {
                 throw new Error("请设置游戏画板");
             }
@@ -195,6 +193,26 @@ define(function(require, exports, module) {
             }
             return this;
         },
+        _loadScene: function(scene) {
+            var game = this;
+            game._currentScene = scene;
+            game._currentScene.setStageSize(game.getStageSize().width, game.getStageSize().height);
+            game._currentScene.on('switchScene', function(scene) {
+                var newScene = scenes[scene];
+                if (newScene) {
+                    game.load(newScene);
+                }
+            });
+            game._currentScene.on('stopScene', function() {
+                game.stop();
+            });
+            game._currentScene.on('startScene', function() {
+                game.start();
+            });
+            if (game._opts.autoRun) {
+                game.start();
+            }
+        },
         //场景跳转控制器
         load: function(Scene) {
             var game = this;
@@ -203,41 +221,19 @@ define(function(require, exports, module) {
                 game._currentScene = null;
             }
             this.loadingStep(0);
-            if (Scene.resources) {
-                var loader = new(require('lib/loader'))();
-                loader.addResources(Scene.resources);
+            var resources = Scene.getResources();
+            if (Object.keys(resources).length) {
+                var loader = new Loader();
+                loader.addResources(resources);
                 loader.on('progressUpdate', function(progress) {
                     game.loadingStep(progress);
                 });
                 loader.on('progressComplete', function() {
-                    game._currentScene = new Scene();
-                    game._currentScene.setStageSize(game.getStageSize().width, game.getStageSize().height);
-                    game._currentScene.on('switchScene', function(scene) {
-                        var newScene = require('app/scene/index')[scene];
-                        if (newScene) {
-                            game.load(newScene);
-                        }
-                    });
-                    game._currentScene.on('stopScene', function() {
-                        game.stop();
-                    });
-                    game._currentScene.on('startScene', function() {
-                        game.start();
-                    });
-                    if (game._opts.autoRun) {
-                        game.start();
-                    }
+                    game._loadScene(new Scene());
                 });
                 loader.load();
             } else {
-                game._currentScene = new Scene();
-                game._currentScene.setStageSize(game.getStageSize().width, game.getStageSize().height);
-                game._currentScene.on('switchScene', function(scene) {
-                    game.load(scene);
-                });
-                if (game._opts.autoRun) {
-                    game.start();
-                }
+                game._loadScene(new Scene());
             }
             return this;
         },
@@ -282,5 +278,5 @@ define(function(require, exports, module) {
             return this;
         }
     });
-    module.exports = CiciGame;
+    return CiciGame;
 });

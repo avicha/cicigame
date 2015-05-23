@@ -12,12 +12,12 @@
 <body>
     <canvas id="canvas"></canvas>
     <div id='msg'></div>
-    <script type="text/javascript" src="assets/js/lib/sea.js"></script>
+    <script type="text/javascript" src="assets/js/lib/require.js"></script>
     <script type="text/javascript">
-        seajs.config({
-            base: "./assets/js"
+        requirejs.config({
+            baseUrl: './assets/js'
         });
-        seajs.use("app/init");
+        require(['app/init']);
     </script>
 </body>
 </html>

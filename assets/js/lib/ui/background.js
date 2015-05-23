@@ -1,9 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Sprite = require('lib/sprite');
-    var Vector2 = require('lib/shape/vector2');
+define(['lib/sprite', 'lib/shape/vector2'], function(Sprite, Vector2) {
     var Background = Sprite.extend({
         init: function(x, y, z, texture, config) {
             this.super(x, y, z);
@@ -91,5 +89,5 @@ define(function(require, exports, module) {
             }
         }
     });
-    module.exports = Background;
+    return Background;
 });

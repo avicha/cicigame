@@ -1,6 +1,4 @@
-define(function(require, exports, module) {
-    var CiciGame = require('lib/yi');
-    var utils = require('lib/utils');
+define(['lib/yi', 'lib/utils', 'app/scene/menu'], function(CiciGame, utils, MenuScene) {
     var game = new CiciGame();
     game.setCanvas(utils.$('#canvas'));
     game.setStageSize(1280, 720);
@@ -16,11 +14,10 @@ define(function(require, exports, module) {
                 context.drawImage(loadingBg, 0, 0);
                 context.drawImage(schedule, 0, 0, schedule.width * progress, schedule.height, 490, 562, schedule.width * progress, schedule.height);
             });
-            var MenuScene = require('app/scene/menu');
             game.launch(MenuScene);
         };
         schedule.src = './assets/img/schedule.png';
     };
     loadingBg.src = './assets/img/loadingBg.png';
-    module.exports = game;
+    return game;
 });

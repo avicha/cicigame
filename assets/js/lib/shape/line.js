@@ -1,9 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Shape = require('lib/shape/shape');
-    var Vector2 = require('lib/shape/vector2');
+define(['lib/shape/shape', 'lib/shape/vector2'], function(Shape, Vector2) {
     var Line = Shape.extend({
         start: new Vector2(0, 0),
         end: new Vector2(1, 0),
@@ -52,4 +50,5 @@ define(function(require, exports, module) {
             return false;
         }
     });
+    return Line;
 });

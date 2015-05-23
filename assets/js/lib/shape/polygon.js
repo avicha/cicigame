@@ -1,8 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Shape = require('lib/shape/shape');
+define(['lib/shape/shape'], function(Shape) {
     var Polygon = Shape.extend({
         //顶点集
         vertexs: [],
@@ -113,5 +112,5 @@ define(function(require, exports, module) {
             }
         }
     });
-    module.exports = Polygon;
+    return Polygon;
 });

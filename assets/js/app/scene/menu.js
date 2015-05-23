@@ -1,11 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Scene = require('lib/scene');
-    var Texture = require('lib/texture');
-    var Background = require('lib/ui/background');
-    var Button = require('lib/ui/button');
+define(['lib/scene', 'lib/texture', 'lib/ui/background', 'lib/ui/button'], function(Scene, Texture, Background, Button) {
     var MenuScene = Scene.extend({
         init: function() {
             var self = this;
@@ -25,9 +21,12 @@ define(function(require, exports, module) {
             });
         }
     });
-    MenuScene.resources = {
-        menuBg: new Texture('menuBg.png'),
-        enterButton: new Texture('enterButton.png', 1, 2)
+    MenuScene.getResources = function() {
+        this.resources = {
+            menuBg: new Texture('menuBg.png'),
+            enterButton: new Texture('enterButton.png', 1, 2)
+        };
+        return this.resources;
     };
-    module.exports = MenuScene;
+    return MenuScene;
 });

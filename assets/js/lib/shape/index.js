@@ -1,9 +1,9 @@
-define(function(require, exports, module) {
-    module.exports = {
-        Circle: require('lib/shape/circle'),
-        Line: require('lib/shape/line'),
-        Polygon: require('lib/shape/polygon'),
-        Rectangle: require('lib/shape/rectangle'),
-        Vector2: require('lib/shape/vector2')
+define(['lib/shape/circle', 'lib/shape/line', 'lib/shape/polygon', 'lib/shape/rectangle', 'lib/shape/vector2'], function(Circle, Line, Polygon, Rectangle, Vector2) {
+    return {
+        Circle: Circle,
+        Line: Line,
+        Polygon: Polygon,
+        Rectangle: Rectangle,
+        Vector2: Vector2
     };
 });

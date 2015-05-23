@@ -1,9 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var utils = require('lib/utils');
-    var DrawableObject = require('lib/drawableobject');
+define(['lib/utils', 'lib/drawableobject'], function(utils, DrawableObject) {
     var Msg = DrawableObject.extend({
         //文字内容
         text: '',
@@ -66,5 +64,5 @@ define(function(require, exports, module) {
         TOP: 'top',
         MIDDLE: 'middle'
     };
-    module.exports = Msg;
+    return Msg;
 });

@@ -1,9 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Shape = require('lib/shape/shape');
-    var Vector2 = require('lib/shape/vector2');
+define(['lib/shape/shape', 'lib/shape/vector2'], function(Shape, Vector2) {
     var Circle = Shape.extend({
         center: new Vector2(0, 0),
         radius: 1,
@@ -79,5 +77,5 @@ define(function(require, exports, module) {
             }
         }
     });
-    module.exports = Circle;
+    return Circle;
 });

@@ -1,9 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Class = require('lib/class');
-    var Vector2 = require('lib/shape/vector2');
+define(['lib/class', 'lib/shape/vector2'], function(Class, Vector2) {
     var Evt = Class.extend({
         init: function(dom) {
             var self = this;
@@ -129,5 +127,5 @@ define(function(require, exports, module) {
         downSwipe: 'downSwipe',
         touchEnd: 'touchEnd'
     };
-    module.exports = Evt;
+    return Evt;
 });

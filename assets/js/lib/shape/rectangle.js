@@ -1,8 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Shape = require('lib/shape/shape');
+define(['lib/shape/shape'], function(Shape) {
     var Rectangle = Shape.extend({
         //上下左右边界和响应的宽高
         left: 0,
@@ -106,5 +105,5 @@ define(function(require, exports, module) {
             context.fillRect(this.left, this.top, this.width, this.height);
         }
     });
-    module.exports = Rectangle;
+    return Rectangle;
 });

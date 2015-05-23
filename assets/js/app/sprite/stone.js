@@ -1,8 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Sprite = require('lib/sprite');
+define(['lib/sprite'], function(Sprite) {
     var Stone = Sprite.extend({
         targetX: 0,
         targetY: 0,
@@ -56,5 +55,5 @@ define(function(require, exports, module) {
             }
         }
     });
-    module.exports = Stone;
+    return Stone;
 });

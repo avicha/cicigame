@@ -1,8 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Sprite = require('lib/sprite');
+define(['lib/sprite'], function(Sprite) {
     var Carrot = Sprite.extend({
         //是否被咬
         isBeated: false,
@@ -28,5 +27,5 @@ define(function(require, exports, module) {
             }
         }
     });
-    module.exports = Carrot;
+    return Carrot;
 });

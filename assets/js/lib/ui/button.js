@@ -1,8 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Sprite = require('lib/sprite');
+define(['lib/sprite'], function(Sprite) {
     var Button = Sprite.extend({
         init: function(x, y, z, texture) {
             this.super(x, y, z);
@@ -14,5 +13,5 @@ define(function(require, exports, module) {
             this.setCurrentAnim('mouseout');
         }
     });
-    module.exports = Button;
+    return Button;
 });

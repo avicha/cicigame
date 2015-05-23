@@ -1,8 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Class = require('lib/class');
+define(['lib/class'], function(Class) {
     var Sound = Class.extend({
         //声音路径
         path: '',
@@ -138,5 +137,5 @@ define(function(require, exports, module) {
         }
     };
     Sound.SOUNDPATH = '';
-    module.exports = Sound;
+    return Sound;
 });

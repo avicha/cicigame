@@ -1,9 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Clock = require('lib/clock');
-    var Class = require('lib/class');
+define(['lib/clock', 'lib/class'], function(Clock, Class) {
     var Animation = Class.extend({
         //动画纹理
         texture: null,
@@ -125,5 +123,5 @@ define(function(require, exports, module) {
             this.texture.drawTile(context, targetX, targetY, this.tile);
         }
     });
-    module.exports = Animation;
+    return Animation;
 });

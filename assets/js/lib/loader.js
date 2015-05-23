@@ -1,8 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Class = require('lib/class');
+define(['lib/class'], function(Class) {
     var Loader = Class.extend({
         loaded: 0,
         sum: 0,
@@ -29,5 +28,5 @@ define(function(require, exports, module) {
             }
         }
     });
-    module.exports = Loader;
+    return Loader;
 });

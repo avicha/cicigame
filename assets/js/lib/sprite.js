@@ -1,10 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var DrawableObject = require('lib/drawableobject');
-    var Animation = require('lib/animation');
-    var Vector2 = require('lib/shape/vector2');
+define(['lib/drawableobject', 'lib/animation', 'lib/shape/vector2'], function(DrawableObject, Animation, Vector2) {
     var Sprite = DrawableObject.extend({
         //精灵类型
         type: 'unknown',
@@ -70,5 +67,5 @@ define(function(require, exports, module) {
             return this.shape.relativeTo(this.position).intersectsWith(other.shape.relativeTo(other.position));
         }
     });
-    module.exports = Sprite;
+    return Sprite;
 });

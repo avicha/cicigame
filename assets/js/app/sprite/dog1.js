@@ -1,13 +1,11 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Dog = require('app/sprite/dog');
-    var Vector2 = require('lib/shape/vector2');
+define(['app/sprite/dog', 'lib/shape/vector2'], function(Dog, Vector2) {
     var Dog1 = Dog.extend({
         speed: new Vector2(-120, 0),
         score: 20,
         bear: 2
     });
-    module.exports = Dog1;
+    return Dog1;
 });

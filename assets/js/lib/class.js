@@ -1,5 +1,4 @@
-define(function(require, exports, module) {
-    var utils = require('lib/utils');
+define(['lib/utils'], function(utils) {
     var Class = function() {};
     Class.extend = function(prop) {
         var parent = this.prototype;
@@ -65,5 +64,5 @@ define(function(require, exports, module) {
         c.extend = arguments.callee;
         return c;
     };
-    module.exports = Class;
+    return Class;
 });

@@ -1,8 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Class = require('lib/class');
+define(['lib/class'], function(Class) {
     var Shape = Class.extend({
         type: 'Shape',
         //中心点
@@ -36,5 +35,5 @@ define(function(require, exports, module) {
         var v2 = pb.sub(po);
         return Math.acos(v1.dot(v2) / (v1.length() * v2.length()));
     }
-    module.exports = Shape;
+    return Shape;
 });

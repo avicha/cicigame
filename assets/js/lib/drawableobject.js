@@ -5,11 +5,7 @@
  * Time: 下午10:47
  * To change this template use File | Settings | File Templates.
  */
-define(function(require, exports, module) {
-    var utils = require('lib/utils');
-    var Class = require('lib/class');
-    var Vector2 = require('lib/shape/vector2');
-    var Rect = require('lib/shape/rectangle');
+define(['lib/utils', 'lib/class', 'lib/shape/vector2', 'lib/shape/rectangle'], function(utils, Class, Vector2, Rect) {
     var DrawableObject = Class.extend({
         //是否可见
         visiable: true,
@@ -61,5 +57,5 @@ define(function(require, exports, module) {
             return this;
         }
     });
-    module.exports = DrawableObject;
+    return DrawableObject;
 });

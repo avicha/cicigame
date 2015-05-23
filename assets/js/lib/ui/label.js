@@ -1,8 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var DrawableObject = require('lib/drawableobject');
+define(['lib/drawableobject'], function(DrawableObject) {
     var Label = DrawableObject.extend({
         //标签图案
         icon: null,
@@ -14,5 +13,5 @@ define(function(require, exports, module) {
             this.icon.drawTile(context, this.position.x, this.position.y);
         }
     });
-    module.exports = Label;
+    return Label;
 });

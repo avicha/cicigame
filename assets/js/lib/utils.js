@@ -1,4 +1,4 @@
-define(function(require, exports, module) {
+define(function() {
     var utils = {
         $: function(selector) {
             return selector.charAt(0) == '#' ? document.getElementById(selector.substr(1)) : document.getElementsByTagName(selector);
@@ -59,5 +59,5 @@ define(function(require, exports, module) {
             return self.apply(bind || null, args);
         };
     };
-    module.exports = utils;
+    return utils;
 });

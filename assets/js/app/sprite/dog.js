@@ -1,8 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Sprite = require('lib/sprite');
+define(['lib/sprite'], function(Sprite) {
     var Dog = Sprite.extend({
         //是否正在咬萝卜车，这是时钟
         beat: 0,
@@ -52,5 +51,5 @@ define(function(require, exports, module) {
             }
         }
     });
-    module.exports = Dog;
+    return Dog;
 });

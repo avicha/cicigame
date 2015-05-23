@@ -1,6 +1,6 @@
-define(function(require, exports, module) {
-    module.exports = {
-        Menu: require('app/scene/menu'),
-        Scene_1: require('app/scene/scene_1')
+define(['app/scene/menu', 'app/scene/scene_1'], function(Menu, Scene_1) {
+    return {
+        Menu: Menu,
+        Scene_1: Scene_1
     };
 });

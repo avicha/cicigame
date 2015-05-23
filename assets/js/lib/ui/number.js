@@ -1,9 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var utils = require('lib/utils');
-    var DrawableObject = require('lib/drawableobject');
+define(['lib/utils', 'lib/drawableobject'], function(utils, DrawableObject) {
     var Num = DrawableObject.extend({
         //数字值
         value: '',
@@ -73,5 +71,5 @@ define(function(require, exports, module) {
         MIDDLE: 1,
         BOTTOM: 2
     };
-    module.exports = Num;
+    return Num;
 });

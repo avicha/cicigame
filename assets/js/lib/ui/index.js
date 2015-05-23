@@ -1,9 +1,9 @@
-define(function(require, exports, module) {
-    module.exports = {
-        Background: require('lib/ui/background'),
-        Button: require('lib/ui/button'),
-        Label: require('lib/ui/label'),
-        Msg: require('lib/ui/msg'),
-        Num: require('lib/ui/number')
+define(['lib/ui/background', 'lib/ui/button', 'lib/ui/label', 'lib/ui/msg', '/lib/ui/number'], function(Background, Button, Label, Msg, Num) {
+    return {
+        Background: Background,
+        Button: Button,
+        Label: Label,
+        Msg: Msg,
+        Num: Num
     };
 });

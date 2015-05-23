@@ -1,23 +1,7 @@
 /**
  * @author lbc
  */
-define(function(require, exports, module) {
-    var Scene = require('lib/scene');
-    var Vector2 = require('lib/shape/vector2');
-    var Texture = require('lib/texture');
-    var Background = require('lib/ui/background');
-    var Label = require('lib/ui/label');
-    var Button = require('lib/ui/button');
-    var Tools = require('app/sprite/tool');
-    var Num = require('lib/ui/number');
-    var Carrot = require('app/sprite/carrot');
-    var Dog = require('app/sprite/dog');
-    var Dog1 = require('app/sprite/dog1');
-    var Dog2 = require('app/sprite/dog2');
-    var Dog3 = require('app/sprite/dog3');
-    var Stone = require('app/sprite/stone');
-    var Bone = require('app/sprite/bone');
-    var Stick = require('app/sprite/stick');
+define(['lib/scene', 'lib/shape/vector2', 'lib/texture', 'lib/ui/background', 'lib/ui/label', 'lib/ui/button', 'lib/ui/number', 'app/sprite/tool', 'app/sprite/carrot', 'app/sprite/dog', 'app/sprite/dog1', 'app/sprite/dog2', 'app/sprite/dog3', 'app/sprite/stone', 'app/sprite/bone', 'app/sprite/stick'], function(Scene, Vector2, Texture, Background, Label, Button, Num, Tools, Carrot, Dog, Dog1, Dog2, Dog3, Stone, Bone, Stick) {
     var Scene_1 = Scene.extend({
         init: function() {
             var self = this;
@@ -260,31 +244,34 @@ define(function(require, exports, module) {
             }
         }
     });
-    Scene_1.resources = {
-        bg1: new Texture('map01.png'),
-        bg2: new Texture('map02.png'),
-        headBg: new Texture('headBg.png'),
-        head: new Texture('head.png'),
-        toolBg: new Texture('toolBg.png'),
-        stone: new Texture('stone-tool.png'),
-        smallNum: new Texture('numberSmall.png', 1, 11),
-        stick: new Texture('stick-tool.png'),
-        bone: new Texture('bone-tool.png'),
-        bloodBg: new Texture('bloodBg.png'),
-        blood: new Texture('blood.png'),
-        menuButton: new Texture('menuButton.png'),
-        stopButton: new Texture('stopButton.png'),
-        scoreBg: new Texture('scoreBg.png'),
-        bigNum: new Texture('numberBig.png', 1, 11),
-        carrot: new Texture('carrot.png', 1, 6),
-        success: new Texture('success.png'),
-        fail: new Texture('fail.png'),
-        dog1: new Texture('dog1.png', 1, 12),
-        dog2: new Texture('dog2.png', 1, 12),
-        dog3: new Texture('dog3.png', 1, 12),
-        stoneSprite: new Texture('stone.png', 1, 4),
-        stickSprite: new Texture('stick.png', 1, 3),
-        boneSprite: new Texture('bone.png', 1, 4)
+    Scene_1.getResources = function() {
+        this.resources = {
+            bg1: new Texture('map01.png'),
+            bg2: new Texture('map02.png'),
+            headBg: new Texture('headBg.png'),
+            head: new Texture('head.png'),
+            toolBg: new Texture('toolBg.png'),
+            stone: new Texture('stone-tool.png'),
+            smallNum: new Texture('numberSmall.png', 1, 11),
+            stick: new Texture('stick-tool.png'),
+            bone: new Texture('bone-tool.png'),
+            bloodBg: new Texture('bloodBg.png'),
+            blood: new Texture('blood.png'),
+            menuButton: new Texture('menuButton.png'),
+            stopButton: new Texture('stopButton.png'),
+            scoreBg: new Texture('scoreBg.png'),
+            bigNum: new Texture('numberBig.png', 1, 11),
+            carrot: new Texture('carrot.png', 1, 6),
+            success: new Texture('success.png'),
+            fail: new Texture('fail.png'),
+            dog1: new Texture('dog1.png', 1, 12),
+            dog2: new Texture('dog2.png', 1, 12),
+            dog3: new Texture('dog3.png', 1, 12),
+            stoneSprite: new Texture('stone.png', 1, 4),
+            stickSprite: new Texture('stick.png', 1, 3),
+            boneSprite: new Texture('bone.png', 1, 4)
+        };
+        return this.resources;
     };
-    module.exports = Scene_1;
+    return Scene_1;
 });
