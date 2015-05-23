@@ -1,7 +1,7 @@
 /**
  * @author lbc
  */
-define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app/scene/index'], function(Class, utils, Texture, Evt, Loader, scenes) {
+define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app/scene/index', 'lib/shape/vector2'], function(Class, utils, Texture, Evt, Loader, scenes, Vector2) {
     //定义动画函数
     if (!window.requestAnimationFrame) {
         window.requestAnimationFrame = (function() {
@@ -163,22 +163,20 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
             var eventListener = new Evt(game.getCanvas());
             for (var type in Evt.type) {
                 game.listenTo(eventListener, type, function(e) {
-                    var point = e.mouses[e.mouses.length - 1];
+                    var point = new Vector2(e.x, e.y);
                     e.x *= game.canvasScale.w;
                     e.y *= game.canvasScale.h;
                     point.set(e.x, e.y);
                     if (game._currentScene) {
-                        var r = [];
-                        game._currentScene.getEntities().forEach(function(entity) {
+                        var entities = game._currentScene.getEntities();
+                        for (var l = entities.length; l; l--) {
+                            var entity = entities[l - 1];
                             if (entity.visiable && entity.shape && entity.shape.relativeTo(entity.position).contains(point)) {
-                                r.push(entity);
+                                e.target = entity;
+                                break;
                             }
-                        });
-                        r.sort(function(a, b) {
-                            return b.z - a.z;
-                        });
-                        e.target = r[0];
-                        game._currentScene.trigger(e.currentEvent, e);
+                        }
+                        game._currentScene.trigger(e.type, e);
                     }
                 });
             }
