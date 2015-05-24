@@ -1,7 +1,7 @@
 /**
  * @author lbc
  */
-define(['lib/class', 'lib/shape/vector2', 'lib/utils'], function(Class, Vector2, utils) {
+define(['lib/class', 'lib/utils'], function(Class, utils) {
     var defaultConfig = {
         longTapDelay: 750,
         swipeRightAngle: 30,
@@ -64,7 +64,7 @@ define(['lib/class', 'lib/shape/vector2', 'lib/utils'], function(Class, Vector2,
             var self = this;
             this.startMouse = this.endMouse = null;
             this.type = Evt.type.none;
-            if (/mobile/i.test(window.navigator.userAgent)) {
+            if (utils.device === 'mobile') {
                 dom.addEventListener('touchstart', function(e) {
                     self.onTouchStart.apply(self, arguments);
                 }, false);

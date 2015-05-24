@@ -18,7 +18,8 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
         //自动运行游戏
         autoRun: true,
         //舞台适配策略
-        stageScaleMode: 'contain'
+        stageScaleMode: 'contain',
+        autoOrientation: true
     };
     var CiciGame = Class.extend({
         _running: false,
@@ -77,47 +78,92 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
             var stageSizeRate = this._stageWidth / this._stageHeight;
             switch (this._opts.stageScaleMode) {
                 case 'contain':
-                    if (windowSizeRate > stageSizeRate) {
-                        canvas.style.height = windowSize.height + 'px';
-                        canvas.style.width = windowSize.height * stageSizeRate + 'px';
-                        this.canvasScale = {
-                            w: canvas.height / windowSize.height,
-                            h: canvas.height / windowSize.height
-                        };
+                    if (utils.device === 'mobile' && this._opts.autoOrientation && stageSizeRate > 1) {
+                        if (windowSizeRate < 1 / stageSizeRate) {
+                            canvas.style.height = windowSize.width + 'px';
+                            canvas.style.width = windowSize.width * stageSizeRate + 'px';
+                            this.canvasScale = {
+                                w: canvas.height / windowSize.width,
+                                h: canvas.height / windowSize.width
+                            };
+                        } else {
+                            canvas.style.width = windowSize.height + 'px';
+                            canvas.style.height = windowSize.height / stageSizeRate + 'px';
+                            this.canvasScale = {
+                                w: canvas.width / windowSize.height,
+                                h: canvas.width / windowSize.height
+                            };
+                        }
                     } else {
-                        canvas.style.width = windowSize.width + 'px';
-                        canvas.style.height = windowSize.width / stageSizeRate + 'px';
-                        this.canvasScale = {
-                            w: canvas.width / windowSize.width,
-                            h: canvas.width / windowSize.width
-                        };
+                        if (windowSizeRate > stageSizeRate) {
+                            canvas.style.height = windowSize.height + 'px';
+                            canvas.style.width = windowSize.height * stageSizeRate + 'px';
+                            this.canvasScale = {
+                                w: canvas.height / windowSize.height,
+                                h: canvas.height / windowSize.height
+                            };
+                        } else {
+                            canvas.style.width = windowSize.width + 'px';
+                            canvas.style.height = windowSize.width / stageSizeRate + 'px';
+                            this.canvasScale = {
+                                w: canvas.width / windowSize.width,
+                                h: canvas.width / windowSize.width
+                            };
+                        }
                     }
-
                     break;
                 case 'cover':
-                    if (windowSizeRate > stageSizeRate) {
-                        canvas.style.width = windowSize.width + 'px';
-                        canvas.style.height = windowSize.width / stageSizeRate + 'px';
-                        this.canvasScale = {
-                            w: canvas.width / windowSize.width,
-                            h: canvas.width / windowSize.width
-                        };
+                    if (utils.device === 'mobile' && this._opts.autoOrientation && stageSizeRate > 1) {
+                        if (windowSizeRate < 1 / stageSizeRate) {
+                            canvas.style.width = windowSize.height + 'px';
+                            canvas.style.height = windowSize.height / stageSizeRate + 'px';
+                            this.canvasScale = {
+                                w: canvas.width / windowSize.height,
+                                h: canvas.width / windowSize.height
+                            };
+                        } else {
+                            canvas.style.height = windowSize.width + 'px';
+                            canvas.style.width = windowSize.width * stageSizeRate + 'px';
+                            this.canvasScale = {
+                                w: canvas.height / windowSize.width,
+                                h: canvas.height / windowSize.width
+                            };
+                        }
                     } else {
-                        canvas.style.height = windowSize.height + 'px';
-                        canvas.style.width = windowSize.height * stageSizeRate + 'px';
-                        this.canvasScale = {
-                            w: canvas.height / windowSize.height,
-                            h: canvas.height / windowSize.height
-                        };
+                        if (windowSizeRate > stageSizeRate) {
+                            canvas.style.width = windowSize.width + 'px';
+                            canvas.style.height = windowSize.width / stageSizeRate + 'px';
+                            this.canvasScale = {
+                                w: canvas.width / windowSize.width,
+                                h: canvas.width / windowSize.width
+                            };
+                        } else {
+                            canvas.style.height = windowSize.height + 'px';
+                            canvas.style.width = windowSize.height * stageSizeRate + 'px';
+                            this.canvasScale = {
+                                w: canvas.height / windowSize.height,
+                                h: canvas.height / windowSize.height
+                            };
+                        }
                     }
                     break;
                 case 'fill':
-                    canvas.style.width = windowSize.width + 'px';
-                    canvas.style.height = windowSize.height + 'px';
-                    this.canvasScale = {
-                        w: canvas.width / windowSize.width,
-                        h: canvas.height / windowSize.height
-                    };
+                    if (utils.device === 'mobile' && this._opts.autoOrientation && stageSizeRate > 1) {
+                        canvas.style.width = windowSize.height + 'px';
+                        canvas.style.height = windowSize.width + 'px';
+                        this.canvasScale = {
+                            w: canvas.width / windowSize.height,
+                            h: canvas.height / windowSize.width
+                        };
+                    } else {
+                        canvas.style.width = windowSize.width + 'px';
+                        canvas.style.height = windowSize.height + 'px';
+                        this.canvasScale = {
+                            w: canvas.width / windowSize.width,
+                            h: canvas.height / windowSize.height
+                        };
+                    }
+
                     break;
                 case 'noscale':
                     this.canvasScale = {
@@ -163,10 +209,12 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
             var eventListener = new Evt(game.getCanvas());
             for (var type in Evt.type) {
                 game.listenTo(eventListener, type, function(e) {
+
                     var point = new Vector2(e.x, e.y);
                     e.x *= game.canvasScale.w;
                     e.y *= game.canvasScale.h;
                     point.set(e.x, e.y);
+                    console.log(e.x, e.y);
                     if (game._currentScene) {
                         var entities = game._currentScene.getEntities();
                         for (var l = entities.length; l; l--) {

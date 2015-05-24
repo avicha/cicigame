@@ -8,10 +8,27 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
+    <link rel="shortcut icon" href="./assets/img/favicon.ico" type="image/x-icon">
+    <style type="text/css">
+    body {
+        background-color: #000;
+    }
+    @media only screen and (max-width: 800px) and (orientation: portrait) {
+        #canvas {
+            -webkit-transform: rotate(90deg);
+            transform: rotate(90deg);
+        }
+    }
+    @media only screen and (max-width: 800px) and (orientation: landscape) {
+        #canvas {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+    }
+    </style>
 </head>
 <body>
     <canvas id="canvas"></canvas>
-    <div id='msg'></div>
     <script type="text/javascript" src="assets/js/lib/require.js"></script>
     <script type="text/javascript">
         requirejs.config({

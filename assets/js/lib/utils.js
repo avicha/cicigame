@@ -43,6 +43,13 @@ define(function() {
         }
         return objClone;
     };
+    utils.device = (function() {
+        if (/mobile/i.test(window.navigator.userAgent)) {
+            return 'mobile';
+        } else {
+            return 'pc';
+        }
+    })();
     //移除数组的对象o，注意，定义了Array的prototype属性，从此遍历数组时就会多一个remove属性，所以需要进行一个类型检测
     Array.prototype.remove = function(o) {
         for (var i = this.length; i--;) {
