@@ -1,0 +1,14 @@
+{
+  "name": "grunt",
+  "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": "0.12.0"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-requirejs": "^0.4.4"
+  }
+}
