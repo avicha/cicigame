@@ -136,20 +136,22 @@ define(['lib/shape/shape'], function(Shape) {
             return Math.sqrt(this.distanceToSquared(v));
         },
         intersectsWith: function(shape) {
-            //点跟点碰撞
-            if (shape.type == 'Vector2') {
-                return this.equals(shape);
-            }
-            //除了点之外的图形跟点碰撞
-            else {
-                return shape.intersectsWith(this);
+            switch (shape.type) {
+                //点跟点碰撞
+                case 'Vector2':
+                    return this.equals(shape);
+                    //除了点之外的图形跟点碰撞
+                default:
+                    return shape.intersectsWith(this);
             }
         },
         contains: function(shape) {
-            if (shape.type == 'Vector2') {
-                return this.equals(shape);
+            switch (shape.type) {
+                case 'Vector2':
+                    return this.equals(shape);
+                default:
+                    return false;
             }
-            return false;
         }
     });
     return Vector2;

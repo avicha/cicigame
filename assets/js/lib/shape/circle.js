@@ -33,47 +33,35 @@ define(['lib/shape/shape', 'lib/shape/vector2'], function(Shape, Vector2) {
             return new Circle(this.center.x + point.x, this.center.y + point.y, this.radius, this.arcBegin, this.arcEnd);
         },
         intersectsWith: function(shape) {
-            //圆跟点碰撞，点到圆心距离小于半径
-            if (shape.type == 'Vector2') {
-                return this.distanceTo(shape) <= this.radius;
-            }
-            //圆跟圆碰撞，圆心距离少于两者半径之和
-            if (shape.type == 'Circle') {
-                return this.center.distanceTo(shape.center) <= this.radius + shape.radius;
-            }
-            //圆跟线碰撞
-            if (shape.type == 'Line') {
-
-            }
-            //圆跟矩形碰撞
-            if (shape.type == 'Rectangle') {
-
-            }
-            //圆跟多边形碰撞
-            if (shape.type == 'Polygon') {
-
+            switch (shape.type) {
+                //圆跟点碰撞，点到圆心距离小于半径
+                case 'Vector2':
+                    return this.distanceTo(shape) <= this.radius;
+                    //圆跟圆碰撞，圆心距离少于两者半径之和
+                case 'Circle':
+                    return this.center.distanceTo(shape.center) <= this.radius + shape.radius;
+                    //圆跟线碰撞
+                case 'Line':
+                    //圆跟矩形碰撞
+                case 'Rectangle':
+                    //圆跟多边形碰撞
+                case 'Polygon':
             }
         },
         contains: function(shape) {
-            //圆包含点
-            if (shape.type == 'Vector2') {
-                return this.distanceTo(shape) <= this.radius;
-            }
-            //圆包含圆，圆心距离小于半径之差
-            if (shape.type == 'Circle') {
-                return this.center.distanceTo(shape.center) <= this.radius - shape.radius;
-            }
-            //圆包含线
-            if (shape.type == 'Line') {
-
-            }
-            //圆包含矩形
-            if (shape.type == 'Rectangle') {
-
-            }
-            //圆包含多边形
-            if (shape.type == 'Polygon') {
-
+            switch (shape.type) {
+                //圆包含点
+                case 'Vector2':
+                    return this.distanceTo(shape) <= this.radius;
+                    //圆包含圆，圆心距离小于半径之差
+                case 'Circle':
+                    return this.center.distanceTo(shape.center) <= this.radius - shape.radius;
+                    //圆包含线
+                case 'Line':
+                    //圆包含矩形
+                case 'Rectangle':
+                    //圆包含多边形
+                case 'Polygon':
             }
         }
     });

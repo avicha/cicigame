@@ -36,79 +36,70 @@ define(['lib/shape/shape'], function(Shape) {
             return new Polygon(points);
         },
         intersectsWith: function(shape) {
-            //多边形跟点碰撞
-            if (shape.type == 'Vector2') {
-                var delta = 0;
-                for (var i = 0; i < this.vertexs.length; i++) {
-                    var point1 = this.vertexs[i];
-                    var point2 = this.vertexs[(i + 1) % this.vertexs.length];
-                    delta += Shape.Angle(point1, shape, point2);
-                }
-                if (Math.abs(delta - 2 * Math.PI) < 0.01) {
-                    return true;
-                }
-                return false;
-            }
-            //多边形跟圆碰撞
-            if (shape.type == 'Circle') {
-
-            }
-            //多边形跟线碰撞
-            if (shape.type == 'Line') {
-
-            }
-            if (shape.type == 'Rectangle') {
-                return this.intersectsWith(new Polygon([
-                    [shape.x, shape.y],
-                    [shape.x + shape.width, shape.y],
-                    [shape.x + shape.width, shape.y + shape.height],
-                    [shape.x, shape.y + shape.height]
-                ]));
-            }
-            //多边形跟矩形或者多边形碰撞
-            if (shape.type == 'Polygon') {
-                this.vertexs.forEach(function(v) {
-                    if (shape.intersectsWith(v)) {
+            switch (shape.type) {
+                //多边形跟点碰撞
+                case 'Vector2':
+                    var delta = 0;
+                    for (var i = 0; i < this.vertexs.length; i++) {
+                        var point1 = this.vertexs[i];
+                        var point2 = this.vertexs[(i + 1) % this.vertexs.length];
+                        delta += Shape.Angle(point1, shape, point2);
+                    }
+                    if (Math.abs(delta - 2 * Math.PI) < 0.01) {
                         return true;
                     }
-                });
-                shape.vertexs.forEach(function(v) {
-                    if (shape.intersectsWith(v)) {
-                        return true;
-                    }
-                });
-                return false;
+                    return false;
+                    //多边形跟矩形或者多边形碰撞
+                case 'Rectangle':
+                    return this.intersectsWith(new Polygon([
+                        [shape.x, shape.y],
+                        [shape.x + shape.width, shape.y],
+                        [shape.x + shape.width, shape.y + shape.height],
+                        [shape.x, shape.y + shape.height]
+                    ]));
+                case 'Polygon':
+                    this.vertexs.forEach(function(v) {
+                        if (shape.intersectsWith(v)) {
+                            return true;
+                        }
+                    });
+                    shape.vertexs.forEach(function(v) {
+                        if (shape.intersectsWith(v)) {
+                            return true;
+                        }
+                    });
+                    return false;
+                    //多边形跟圆碰撞
+                case 'Circle':
+                    //多边形跟线碰撞
+                case 'Line':
             }
         },
         contains: function(shape) {
-            //多边形包含点
-            if (shape.type == 'Vector2') {
-                return this.intersectsWith(shape);
-            }
-            //多边形包含圆
-            if (shape.type == 'Circle') {
-
-            }
-            //多边形包含线
-            if (shape.type == 'Line') {
-
-            }
-            if (shape.type == 'Rectangle') {
-                return this.contains(new Polygon([
-                    [shape.x, shape.y],
-                    [shape.x + shape.width, shape.y],
-                    [shape.x + shape.width, shape.y + shape.height],
-                    [shape.x, shape.y + shape.height]
-                ]));
-            }
-            //多边形包含矩形或者多边形
-            if (shape.type == 'Polygon') {
-                shape.vertexs.forEach(function(v) {
-                    if (!this.contains(v)) {
-                        return false;
-                    }
-                });
-                return true;
+            switch (shape.type) {
+                //多边形包含点
+                case 'Vector2':
+                    return this.intersectsWith(shape);
+                    //多边形包含矩形
+                case 'Rectangle':
+                    return this.contains(new Polygon([
+                        [shape.x, shape.y],
+                        [shape.x + shape.width, shape.y],
+                        [shape.x + shape.width, shape.y + shape.height],
+                        [shape.x, shape.y + shape.height]
+                    ]));
+                    //多边形包含矩形或者多边形
+                case 'Polygon':
+                    shape.vertexs.forEach(function(v) {
+                        if (!this.contains(v)) {
+                            return false;
+                        }
+                    });
+                    return true;
+                    //多边形包含圆
+                case 'Circle':
+                    //多边形包含线
+                case 'Line':
             }
         }
     });

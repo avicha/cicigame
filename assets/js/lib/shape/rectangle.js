@@ -51,53 +51,43 @@ define(['lib/shape/shape'], function(Shape) {
         },
         //判断两个长方形是否相交
         intersectsWith: function(shape) {
-            //矩形跟点碰撞
-            if (shape.type == 'Vector2') {
-                return shape.x >= this.left && shape.x <= this.right && shape.y >= this.top && shape.y <= this.bottom;
-            }
-            //矩形跟矩形碰撞
-            if (shape.type == 'Rectangle') {
-                return shape.right >= this.left && shape.left <= this.right && shape.top <= this.bottom && shape.bottom >= this.top;
-            }
-            //矩形跟圆碰撞
-            if (shape.type == 'Circle') {
-
-            }
-            //矩形跟线碰撞
-            if (shape.type == 'Line') {
-
-            }
-            //矩形跟多边形碰撞
-            if (shape.type == 'Polygon') {
-                return shape.intersectsWith(this);
+            switch (shape.type) {
+                //矩形跟点碰撞
+                case 'Vector2':
+                    return shape.x >= this.left && shape.x <= this.right && shape.y >= this.top && shape.y <= this.bottom;
+                    //矩形跟矩形碰撞
+                case 'Rectangle':
+                    return shape.right >= this.left && shape.left <= this.right && shape.top <= this.bottom && shape.bottom >= this.top;
+                    //矩形跟多边形碰撞
+                case 'Polygon':
+                    return shape.intersectsWith(this);
+                    //矩形跟圆碰撞
+                case 'Circle':
+                    //矩形跟线碰撞
+                case 'Line':
             }
         },
         //判断矩形是否内含另一个矩形
         contains: function(shape) {
-            //矩形包含点
-            if (shape.type == 'Vector2') {
-                return shape.x >= this.left && shape.x <= this.right && shape.y >= this.top && shape.y <= this.bottom;
-            }
-            //矩形包含矩形
-            if (shape.type == 'Rectangle') {
-                return this.left <= shape.left && this.right >= shape.right && this.top <= shape.top && this.bottom >= shape.bottom;
-            }
-            //矩形包含圆
-            if (shape.type == 'Circle') {
-
-            }
-            //矩形包含线
-            if (shape.type == 'Line') {
-
-            }
-            //矩形包含多边形
-            if (shape.type == 'Polygon') {
-                shape.vertexs.forEach(function(v) {
-                    if (!this.contains(v)) {
-                        return false;
-                    }
-                });
-                return true;
+            switch (shape.type) {
+                //矩形包含点
+                case 'Vector2':
+                    return shape.x >= this.left && shape.x <= this.right && shape.y >= this.top && shape.y <= this.bottom;
+                    //矩形包含矩形
+                case 'Rectangle':
+                    return this.left <= shape.left && this.right >= shape.right && this.top <= shape.top && this.bottom >= shape.bottom;
+                    //矩形包含多边形
+                case 'Polygon':
+                    shape.vertexs.forEach(function(v) {
+                        if (!this.contains(v)) {
+                            return false;
+                        }
+                    });
+                    return true;
+                    //矩形包含圆
+                case 'Circle':
+                    //矩形包含线
+                case 'Line':
             }
         },
         draw: function(context) {

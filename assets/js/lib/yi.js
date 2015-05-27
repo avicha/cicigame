@@ -78,7 +78,9 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
             var stageSizeRate = this._stageWidth / this._stageHeight;
             switch (this._opts.stageScaleMode) {
                 case 'contain':
-                    if (utils.device === 'mobile' && this._opts.autoOrientation && stageSizeRate > 1) {
+                    if (utils.device === 'mobile' && this._opts.autoOrientation && stageSizeRate > 1 && windowSize.width < windowSize.height) {
+                        canvas.style.transform = canvas.style.webkitTransform = 'rotate(90deg)';
+                        this.canvasRotate = true;
                         if (windowSizeRate < 1 / stageSizeRate) {
                             canvas.style.height = windowSize.width + 'px';
                             canvas.style.width = windowSize.width * stageSizeRate + 'px';
@@ -95,6 +97,8 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
                             };
                         }
                     } else {
+                        canvas.style.transform = canvas.style.webkitTransform = 'rotate(0deg)';
+                        this.canvasRotate = false;
                         if (windowSizeRate > stageSizeRate) {
                             canvas.style.height = windowSize.height + 'px';
                             canvas.style.width = windowSize.height * stageSizeRate + 'px';
@@ -114,6 +118,8 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
                     break;
                 case 'cover':
                     if (utils.device === 'mobile' && this._opts.autoOrientation && stageSizeRate > 1) {
+                        canvas.style.transform = canvas.style.webkitTransform = 'rotate(90deg)';
+                        this.canvasRotate = true;
                         if (windowSizeRate < 1 / stageSizeRate) {
                             canvas.style.width = windowSize.height + 'px';
                             canvas.style.height = windowSize.height / stageSizeRate + 'px';
@@ -130,6 +136,8 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
                             };
                         }
                     } else {
+                        canvas.style.transform = canvas.style.webkitTransform = 'rotate(0deg)';
+                        this.canvasRotate = false;
                         if (windowSizeRate > stageSizeRate) {
                             canvas.style.width = windowSize.width + 'px';
                             canvas.style.height = windowSize.width / stageSizeRate + 'px';
@@ -149,6 +157,8 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
                     break;
                 case 'fill':
                     if (utils.device === 'mobile' && this._opts.autoOrientation && stageSizeRate > 1) {
+                        canvas.style.transform = canvas.style.webkitTransform = 'rotate(90deg)';
+                        this.canvasRotate = true;
                         canvas.style.width = windowSize.height + 'px';
                         canvas.style.height = windowSize.width + 'px';
                         this.canvasScale = {
@@ -156,6 +166,8 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
                             h: canvas.height / windowSize.width
                         };
                     } else {
+                        canvas.style.transform = canvas.style.webkitTransform = 'rotate(0deg)';
+                        this.canvasRotate = false;
                         canvas.style.width = windowSize.width + 'px';
                         canvas.style.height = windowSize.height + 'px';
                         this.canvasScale = {
@@ -179,7 +191,7 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
         _setCanvasPosition: function() {
             var canvas = this.getCanvas();
             utils.$('body')[0].style.margin = 0;
-            canvas.style.position = 'absolute';
+            canvas.style.position = 'fixed';
             canvas.style.left = '50%';
             canvas.style.top = '50%';
             canvas.style.marginTop = -window.parseInt(canvas.style.height) / 2 + 'px';
@@ -209,12 +221,20 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
             var eventListener = new Evt(game.getCanvas());
             for (var type in Evt.type) {
                 game.listenTo(eventListener, type, function(e) {
-
-                    var point = new Vector2(e.x, e.y);
-                    e.x *= game.canvasScale.w;
-                    e.y *= game.canvasScale.h;
-                    point.set(e.x, e.y);
-                    console.log(e.x, e.y);
+                    var x = e.x,
+                        y = e.y;
+                    var point = new Vector2();
+                    if (!game.canvasRotate) {
+                        e.x = (x - canvas.offsetLeft) * game.canvasScale.w;
+                        e.y = (y - canvas.offsetTop) * game.canvasScale.h;
+                        point.set(e.x, e.y);
+                    } else {
+                        var canvasW = window.parseInt(canvas.style.width);
+                        var canvasH = window.parseInt(canvas.style.height);
+                        e.x = (y - (canvas.offsetTop * 2 + canvasH - canvasW) / 2) * game.canvasScale.w;
+                        e.y = (canvas.offsetLeft - x + (canvasW + canvasH) / 2) * game.canvasScale.h;
+                        point.set(e.x, e.y);
+                    }
                     if (game._currentScene) {
                         var entities = game._currentScene.getEntities();
                         for (var l = entities.length; l; l--) {
@@ -228,6 +248,14 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
                     }
                 });
             }
+            window.onresize = function() {
+                game._setCanvasSize();
+                game._setCanvasPosition();
+            };
+            window.addEventListener('orientationchange', function(e) {
+                game._setCanvasSize();
+                game._setCanvasPosition();
+            }, false);
             return game;
         },
         loadingStep: function(progress) {
@@ -285,6 +313,7 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
         },
         //运行游戏循环
         run: function() {
+            window.scrollTo(0, 0);
             if (this._running && this._currentScene) {
                 var t1 = Date.now();
                 this._currentScene.update(this._opts.fps);

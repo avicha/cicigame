@@ -17,35 +17,25 @@ define(['lib/shape/shape', 'lib/shape/vector2'], function(Shape, Vector2) {
             this.k = (point2.y - point1.y) / (point2.x - point1.x);
         },
         intersectsWith: function(shape) {
-            //线跟点碰撞
-            if (shape.type == 'Vector2') {
-
-            }
-            //线跟圆碰撞
-            if (shape.type == 'Circle') {
-
-            }
-            //线跟线碰撞
-            if (shape.type == 'Line') {
-
-            }
-            //线跟矩形碰撞
-            if (shape.type == 'Rectangle') {
-
-            }
-            //线跟多边形碰撞
-            if (shape.type == 'Polygon') {
-
+            switch (shape.type) {
+                //线跟点碰撞
+                case 'Vector2':
+                    //线跟圆碰撞
+                case 'Circle':
+                    //线跟线碰撞
+                case 'Line':
+                    //线跟矩形碰撞
+                case 'Rectangle':
+                    //线跟多边形碰撞
+                case 'Polygon':
             }
         },
         contains: function(shape) {
-            //线包含点
-            if (shape.type == 'Vector2') {
-
-            }
-            //线包含线
-            if (shape.type == 'Line') {
-
+            switch (shape.type) {
+                //线包含点
+                case 'Vector2':
+                    //线包含线
+                case 'Line':
             }
             return false;
         }

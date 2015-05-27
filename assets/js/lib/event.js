@@ -14,8 +14,8 @@ define(['lib/class', 'lib/utils'], function(Class, utils) {
         tapMaxY: 10,
         preventScrollRight: true,
         preventScrollLeft: true,
-        preventScrollUp: false,
-        preventScrollDown: false,
+        preventScrollUp: true,
+        preventScrollDown: true,
         moveDetect: false
     };
     var getMoveDirection = function(x1, y1, x2, y2) {
@@ -62,6 +62,7 @@ define(['lib/class', 'lib/utils'], function(Class, utils) {
         info: {},
         init: function(dom) {
             var self = this;
+            this.el = dom;
             this.startMouse = this.endMouse = null;
             this.type = Evt.type.none;
             if (utils.device === 'mobile') {
@@ -76,9 +77,6 @@ define(['lib/class', 'lib/utils'], function(Class, utils) {
                 }, false);
                 dom.addEventListener('touchcancel', function(e) {
                     self.onTouchEnd.apply(self, arguments);
-                }, false);
-                window.addEventListener('orientationchange', function(e) {
-                    self.onOrientationChange.apply(self, arguments);
                 }, false);
             } else {
                 dom.addEventListener('mousedown',
@@ -135,8 +133,8 @@ define(['lib/class', 'lib/utils'], function(Class, utils) {
             var now = Date.now();
             var delta = now - (this.info._last || now);
             var point = e.touches[0];
-            this.info.x1 = this.info.x = this.info._lastX = point.clientX;
-            this.info.y1 = this.info.y = this.info._lastY = point.clientY;
+            this.info.x1 = this.info.x = this.info._lastX = point.pageX;
+            this.info.y1 = this.info.y = this.info._lastY = point.pageY;
             if (delta > 0 && delta <= 250) {
                 this.info.isDoubleTap = true;
             }
@@ -150,8 +148,8 @@ define(['lib/class', 'lib/utils'], function(Class, utils) {
         onTouchMove: function(e) {
             this.cancelLongTap();
             var point = e.touches[0];
-            this.info.x = point.clientX;
-            this.info.y = point.clientY;
+            this.info.x = point.pageX;
+            this.info.y = point.pageY;
             if (e.touches.length > 1) {
                 this.info.mutiTouch = true;
             } else {
@@ -172,8 +170,8 @@ define(['lib/class', 'lib/utils'], function(Class, utils) {
             this.cancelLongTap();
             if (e.changedTouches && e.changedTouches.length) {
                 var point = e.changedTouches[0];
-                this.info.x = point.clientX;
-                this.info.y = point.clientY;
+                this.info.x = point.pageX;
+                this.info.y = point.pageY;
                 setPointInfo(this.info);
             }
             this._triggerEvent.call(this, Evt.type.touchEnd);
