@@ -225,8 +225,13 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
                         y = e.y;
                     var point = new Vector2();
                     if (!game.canvasRotate) {
-                        e.x = (x - canvas.offsetLeft) * game.canvasScale.w;
-                        e.y = (y - canvas.offsetTop) * game.canvasScale.h;
+                        if (utils.device === 'mobile') {
+                            e.x = (x - canvas.offsetLeft) * game.canvasScale.w;
+                            e.y = (y - canvas.offsetTop) * game.canvasScale.h;
+                        } else {
+                            e.x = x * game.canvasScale.w;
+                            e.y = y * game.canvasScale.h;
+                        }
                         point.set(e.x, e.y);
                     } else {
                         var canvasW = window.parseInt(canvas.style.width);
