@@ -1,5 +1,5 @@
 //纹理类
-define(['lib/class'], function(Class) {
+define(['lib/class', 'lib/utils'], function(Class, utils) {
     var Texture = Class.extend({
         //图片路径
         path: '',
@@ -24,6 +24,8 @@ define(['lib/class'], function(Class) {
             this.path = Texture.IMGPATH + path;
             this.rows = rows || 1;
             this.columns = columns || 1;
+            this.canvas = utils.$new('canvas');
+            this.context = this.canvas.getContext('2d');
             return this;
         },
         //加载图片
@@ -52,8 +54,9 @@ define(['lib/class'], function(Class) {
         //加载完成回调函数
         onload: function(callback) {
             this.loaded = true;
-            this.width = this.image.width;
-            this.height = this.image.height;
+            this.canvas.width = this.width = this.image.width;
+            this.canvas.height = this.height = this.image.height;
+            this.context.drawImage(this.image, 0, 0, this.width, this.height, 0, 0, this.width, this.height);
             this.tileWidth = this.width / this.columns;
             this.tileHeight = this.height / this.rows;
             if (callback) {
@@ -65,7 +68,7 @@ define(['lib/class'], function(Class) {
             if (this.loaded) {
                 width = Math.min(this.width - sourceX, width);
                 height = Math.min(this.height - sourceY, height);
-                g.drawImage(this.image, sourceX, sourceY, width, height, targetX, targetY, width, height);
+                g.drawImage(this.canvas, sourceX, sourceY, width, height, targetX, targetY, width, height);
             }
         },
         //描绘图片某个格点到某个位置
@@ -74,7 +77,7 @@ define(['lib/class'], function(Class) {
                 tile = tile || 0;
                 var sx = (tile % this.columns) * this.tileWidth;
                 var sy = window.parseInt(tile / this.columns) * this.tileHeight;
-                g.drawImage(this.image, sx, sy, this.tileWidth, this.tileHeight, targetX, targetY, this.tileWidth, this.tileHeight);
+                g.drawImage(this.canvas, sx, sy, this.tileWidth, this.tileHeight, targetX, targetY, this.tileWidth, this.tileHeight);
             }
         }
     });
