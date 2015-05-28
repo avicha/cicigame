@@ -37,6 +37,10 @@ define(['lib/shape/shape'], function(Shape) {
             this.bottom = bottom;
             this.resize();
         },
+        //获取面积
+        getArea: function() {
+            return this.width * this.height;
+        },
         //长方形增大v的大小
         inflate: function(v) {
             this.left -= v;

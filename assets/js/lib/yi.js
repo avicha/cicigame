@@ -1,7 +1,7 @@
 /**
  * @author lbc
  */
-define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app/scene/index', 'lib/shape/vector2'], function(Class, utils, Texture, Evt, Loader, scenes, Vector2) {
+define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app/scene/index', 'lib/shape/vector2', 'lib/shape/rectangle'], function(Class, utils, Texture, Evt, Loader, scenes, Vector2, Rect) {
     //定义动画函数
     if (!window.requestAnimationFrame) {
         window.requestAnimationFrame = (function() {
@@ -19,7 +19,9 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
         autoRun: true,
         //舞台适配策略
         stageScaleMode: 'contain',
-        autoOrientation: true
+        autoOrientation: true,
+        autoUpdate: true,
+        debug: false
     };
     var CiciGame = Class.extend({
         _running: false,
@@ -215,6 +217,10 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
             game._context = canvas.getContext('2d');
             game._setCanvasSize();
             game._setCanvasPosition();
+            game._canvasBuffer = utils.$new('canvas');
+            game._canvasBuffer.width = canvas.width;
+            game._canvasBuffer.height = canvas.height;
+            game._contextBuffer = game._canvasBuffer.getContext('2d');
             if (scene) {
                 game.load(scene);
             }
@@ -261,6 +267,20 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
                 game._setCanvasSize();
                 game._setCanvasPosition();
             }, false);
+            if (game._opts.debug) {
+                var info = utils.$new('div');
+                info.style.width = 50;
+                info.style.height = 50;
+                info.style.position = 'absolute';
+                info.style.background = '#000';
+                info.style.color = '#fff';
+                utils.$('body')[0].appendChild(info);
+                game.frameCount = 0;
+                setInterval(function() {
+                    info.innerHTML = 'FPS:' + game.frameCount;
+                    game.frameCount = 0;
+                }, 1000);
+            }
             return game;
         },
         loadingStep: function(progress) {
@@ -322,13 +342,21 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
             if (this._running && this._currentScene) {
                 var t1 = Date.now();
                 this._currentScene.update(this._opts.fps);
-                this._context.fillStyle = this.clearColor;
-                this._context.clearRect(0, 0, this._stageWidth, this._stageHeight);
-                this._currentScene.draw(this._context);
+                this._contextBuffer.fillStyle = this.clearColor;
+                this._contextBuffer.clearRect(0, 0, this._stageWidth, this._stageHeight);
+                this._currentScene.draw(this._contextBuffer);
+                var dirtyZone = this._currentScene.dirtyZone;
+                if (dirtyZone && dirtyZone instanceof Rect && dirtyZone.getArea() < 0.5 * this._canvas.width * this._canvas.height) {
+                    this._context.drawImage(this._canvasBuffer, dirtyZone.left, dirtyZone.top, dirtyZone.width, dirtyZone.height, dirtyZone.left, dirtyZone.top, dirtyZone.width, dirtyZone.height);
+                } else {
+                    this._context.drawImage(this._canvasBuffer, 0, 0, this._canvas.width, this._canvas.height, 0, 0, this._canvas.width, this._canvas.height);
+                }
                 var t2 = Date.now();
                 var dt = t2 - t1;
                 window.requestAnimationFrame(this.run.bind(this), 1000 / this._opts.fps - dt);
-                this.frameCount++;
+                if (this._opts.debug) {
+                    this.frameCount++;
+                }
             } else {
                 this._running = false;
             }

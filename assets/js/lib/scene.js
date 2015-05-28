@@ -12,6 +12,7 @@ define(['lib/class'], function(Class) {
         },
         //场景实体
         _entities: [],
+        dirtyZone: null,
         //场景命名实体
         _namedEntities: {},
         setStageSize: function(w, h) {
