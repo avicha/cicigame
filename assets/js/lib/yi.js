@@ -338,19 +338,23 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
         },
         //运行游戏循环
         run: function() {
-            window.scrollTo(0, 0);
+            // window.scrollTo(0, 0);
             if (this._running && this._currentScene) {
                 var t1 = Date.now();
                 this._currentScene.update(this._opts.fps);
                 this._contextBuffer.fillStyle = this.clearColor;
-                this._contextBuffer.clearRect(0, 0, this._stageWidth, this._stageHeight);
-                this._currentScene.draw(this._contextBuffer);
                 var dirtyZone = this._currentScene.dirtyZone;
-                if (dirtyZone && dirtyZone instanceof Rect && dirtyZone.getArea() < 0.5 * this._canvas.width * this._canvas.height) {
+                if (!this._currentScene.firstRender && dirtyZone) {
+                    this._contextBuffer.clearRect(dirtyZone.left, dirtyZone.top, dirtyZone.width, dirtyZone.height);
+                    this._currentScene.draw(this._contextBuffer);
                     this._context.drawImage(this._canvasBuffer, dirtyZone.left, dirtyZone.top, dirtyZone.width, dirtyZone.height, dirtyZone.left, dirtyZone.top, dirtyZone.width, dirtyZone.height);
                 } else {
+                    this._contextBuffer.clearRect(0, 0, this._stageWidth, this._stageHeight);
+                    this._currentScene.draw(this._contextBuffer);
                     this._context.drawImage(this._canvasBuffer, 0, 0, this._canvas.width, this._canvas.height, 0, 0, this._canvas.width, this._canvas.height);
                 }
+                this._currentScene.dirtyZone = null;
+                this._currentScene.firstRender = false;
                 var t2 = Date.now();
                 var dt = t2 - t1;
                 window.requestAnimationFrame(this.run.bind(this), 1000 / this._opts.fps - dt);

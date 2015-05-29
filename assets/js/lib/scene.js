@@ -2,7 +2,7 @@
  * @author lbc
  */
 //场景类
-define(['lib/class'], function(Class) {
+define(['lib/class', 'lib/shape/rectangle'], function(Class, Rect) {
     var Scene = Class.extend({
         //背景音乐
         bgSound: null,
@@ -12,6 +12,7 @@ define(['lib/class'], function(Class) {
         },
         //场景实体
         _entities: [],
+        firstRender: true,
         dirtyZone: null,
         //场景命名实体
         _namedEntities: {},
@@ -29,6 +30,17 @@ define(['lib/class'], function(Class) {
         getResources: function() {
             return this.resources;
         },
+        addDirtyZone: function(dirtyZone) {
+            if (!this.dirtyZone) {
+                this.dirtyZone = dirtyZone;
+            } else {
+                var left = Math.min(this.dirtyZone.left, dirtyZone.left);
+                var right = Math.max(this.dirtyZone.right, dirtyZone.right);
+                var top = Math.min(this.dirtyZone.top, dirtyZone.top);
+                var bottom = Math.max(this.dirtyZone.bottom, dirtyZone.bottom);
+                this.dirtyZone = new Rect(left, top, right - left, bottom - top);
+            }
+        },
         //更新场景
         update: function(fps) {
             var self = this;
@@ -44,21 +56,28 @@ define(['lib/class'], function(Class) {
                     self.removeGameObject(e);
                 }
             });
+            if (this.dirtyZone && this.dirtyZone.getArea() > 0.5 * this._stageWidth * this._stageHeight) {
+                this.dirtyZone = null;
+            }
         },
         //描绘场景
         draw: function(context) {
+            var self = this;
             this._entities.forEach(function(e) {
                 if (e.draw) {
+                    context.save();
                     //描绘之前，操作画布
                     if (e.alpha != 1) {
                         context.globalAlpha = e.alpha;
                     }
-                    context.save();
                     if (e.angle) {
                         context.rotate(e.angle);
                     }
                     if (e.scale.x != 1 || e.scale.y != 1) {
                         context.scale(e.scale.x, e.scale.y);
+                    }
+                    if (!self.firstRender) {
+                        context.dirtyZone = self.dirtyZone;
                     }
                     e.draw(context);
                     //描绘之后恢复画布

@@ -1,5 +1,5 @@
 //纹理类
-define(['lib/class', 'lib/utils'], function(Class, utils) {
+define(['lib/class', 'lib/utils', 'lib/shape/rectangle'], function(Class, utils, Rect) {
     var Texture = Class.extend({
         //图片路径
         path: '',
@@ -68,17 +68,32 @@ define(['lib/class', 'lib/utils'], function(Class, utils) {
             if (this.loaded) {
                 width = Math.min(this.width - sourceX, width);
                 height = Math.min(this.height - sourceY, height);
-                g.drawImage(this.canvas, sourceX, sourceY, width, height, targetX, targetY, width, height);
+                if (g.dirtyZone) {
+                    var left = Math.max(targetX, g.dirtyZone.left);
+                    var right = Math.min(targetX + width, g.dirtyZone.right);
+                    var top = Math.max(targetY, g.dirtyZone.top);
+                    var bottom = Math.min(targetY + height, g.dirtyZone.bottom);
+                    var drawZone = new Rect(left, top, right - left, bottom - top);
+                    if (drawZone.width > 0 && drawZone.height > 0) {
+                        sourceX += drawZone.left - targetX;
+                        sourceY += drawZone.top - targetY;
+                        targetX = drawZone.left;
+                        targetY = drawZone.top;
+                        width = drawZone.width;
+                        height = drawZone.height;
+                        g.drawImage(this.canvas, sourceX, sourceY, width, height, targetX, targetY, width, height);
+                    }
+                } else {
+                    g.drawImage(this.canvas, sourceX, sourceY, width, height, targetX, targetY, width, height);
+                }
             }
         },
         //描绘图片某个格点到某个位置
         drawTile: function(g, targetX, targetY, tile) {
-            if (this.loaded) {
-                tile = tile || 0;
-                var sx = (tile % this.columns) * this.tileWidth;
-                var sy = window.parseInt(tile / this.columns) * this.tileHeight;
-                g.drawImage(this.canvas, sx, sy, this.tileWidth, this.tileHeight, targetX, targetY, this.tileWidth, this.tileHeight);
-            }
+            tile = tile || 0;
+            var sx = (tile % this.columns) * this.tileWidth;
+            var sy = window.parseInt(tile / this.columns) * this.tileHeight;
+            this.draw(g, targetX, targetY, sx, sy, this.tileWidth, this.tileHeight);
         }
     });
     Texture.IMGPATH = '';

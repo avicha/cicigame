@@ -1,5 +1,7 @@
 define(['lib/yi', 'lib/utils', 'app/scene/menu'], function(CiciGame, utils, MenuScene) {
-    var game = new CiciGame();
+    var game = new CiciGame({
+        debug: true
+    });
     game.setCanvas(utils.$('#canvas'));
     game.setStageSize(1280, 720);
     game.setTexturePath('./assets/img/');
