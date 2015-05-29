@@ -19,6 +19,10 @@ define(['lib/scene', 'lib/texture', 'lib/ui/background', 'lib/ui/button'], funct
                     self.trigger('switchScene', 'Scene_1');
                 }
             });
+        },
+        update: function(fps) {
+            this.addDirtyZone(this.enterButton.shape.relativeTo(this.enterButton.position));
+            this.super(fps);
         }
     });
     MenuScene.getResources = function() {

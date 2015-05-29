@@ -1,7 +1,7 @@
 /**
  * @author lbc
  */
-define(['lib/scene', 'lib/shape/vector2', 'lib/texture', 'lib/ui/background', 'lib/ui/label', 'lib/ui/button', 'lib/ui/number', 'app/sprite/tool', 'app/sprite/carrot', 'app/sprite/dog', 'app/sprite/dog1', 'app/sprite/dog2', 'app/sprite/dog3', 'app/sprite/stone', 'app/sprite/bone', 'app/sprite/stick', 'lib/shape/rectangle'], function(Scene, Vector2, Texture, Background, Label, Button, Num, Tools, Carrot, Dog, Dog1, Dog2, Dog3, Stone, Bone, Stick, Rect) {
+define(['lib/scene', 'lib/shape/vector2', 'lib/texture', 'lib/ui/background', 'lib/ui/label', 'lib/ui/button', 'lib/ui/number', 'app/sprite/tool', 'app/sprite/carrot', 'app/sprite/dog', 'app/sprite/dog1', 'app/sprite/dog2', 'app/sprite/dog3', 'app/sprite/stone', 'app/sprite/bone', 'app/sprite/stick'], function(Scene, Vector2, Texture, Background, Label, Button, Num, Tools, Carrot, Dog, Dog1, Dog2, Dog3, Stone, Bone, Stick) {
     var Scene_1 = Scene.extend({
         init: function() {
             var self = this;
@@ -161,8 +161,6 @@ define(['lib/scene', 'lib/shape/vector2', 'lib/texture', 'lib/ui/background', 'l
                 this.trigger('stopScene');
                 return;
             }
-            this.addDirtyZone(new Rect(0, 0, 100, 200));
-            this.addDirtyZone(new Rect(0, 0, 200, 300));
             this.carrot.isBeated = false;
             //改变血条的宽度
             this.blood.icon.tileWidth = 240 * this.carrot.health / 100;
