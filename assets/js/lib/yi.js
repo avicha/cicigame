@@ -274,6 +274,7 @@ define(['lib/class', 'lib/utils', 'lib/texture', 'lib/event', 'lib/loader', 'app
                 info.style.position = 'absolute';
                 info.style.background = '#000';
                 info.style.color = '#fff';
+                info.style.zIndex = 1000;
                 utils.$('body')[0].appendChild(info);
                 game.frameCount = 0;
                 setInterval(function() {
